@@ -1,0 +1,50 @@
+{
+  "timeframe": "15m",
+  "model_type": "XGBoost",
+  "targets": [
+    {
+      "target_name": "direction_h1",
+      "model_file": "btc_15m_xgboost_direction_h1.json",
+      "scaler_file": "btc_15m_scaler_direction_h1.joblib",
+      "features_file": "btc_15m_xgboost_features_direction_h1.txt",
+      "metadata_file": "btc_15m_xgboost_direction_h1_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.9986893840104849,
+      "task_type": "classification",
+      "timestamp": "20250927_020148"
+    },
+    {
+      "target_name": "direction_h5",
+      "model_file": "btc_15m_xgboost_direction_h5.json",
+      "scaler_file": "btc_15m_scaler_direction_h5.joblib",
+      "features_file": "btc_15m_xgboost_features_direction_h5.txt",
+      "metadata_file": "btc_15m_xgboost_direction_h5_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.9794670161642639,
+      "task_type": "classification",
+      "timestamp": "20250927_020153"
+    },
+    {
+      "target_name": "direction_h20",
+      "model_file": "btc_15m_xgboost_direction_h20.json",
+      "scaler_file": "btc_15m_scaler_direction_h20.joblib",
+      "features_file": "btc_15m_xgboost_features_direction_h20.txt",
+      "metadata_file": "btc_15m_xgboost_direction_h20_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.9611183923110529,
+      "task_type": "classification",
+      "timestamp": "20250927_020205"
+    },
+    {
+      "target_name": "direction",
+      "model_file": "btc_15m_xgboost_direction.json",
+      "scaler_file": "btc_15m_scaler_direction.joblib",
+      "features_file": "btc_15m_xgboost_features_direction.txt",
+      "metadata_file": "btc_15m_xgboost_direction_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.9611183923110529,
+      "task_type": "classification",
+      "timestamp": "20250927_020235"
+    }
+  ]
+}

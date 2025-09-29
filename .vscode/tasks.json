@@ -1,0 +1,64 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Predict (15m auto json)",
+			"type": "shell",
+			"command": "/home/donvirtus/miniconda3/envs/projects/bin/python",
+			"args": [
+				"scripts/predict_enhanced.py",
+				"--timeframe",
+				"15m",
+				"--model",
+				"auto",
+				"--output",
+				"json",
+				"--single",
+				"--history-rows",
+				"400",
+				"--confidence-threshold",
+				"0.75"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Predict (continuous 15m rich)",
+			"type": "shell",
+			"command": "/home/donvirtus/miniconda3/envs/projects/bin/python",
+			"args": [
+				"scripts/predict_enhanced.py",
+				"--timeframe",
+				"15m",
+				"--model",
+				"auto",
+				"--interval",
+				"300",
+				"--continuous"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Train LightGBM all config",
+			"type": "shell",
+			"command": "/home/donvirtus/miniconda3/envs/projects/bin/python",
+			"args": [
+				"scripts/train_tree_model.py",
+				"--model",
+				"lightgbm",
+				"--timeframe",
+				"config"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "rebuild-datasets-13mo",
+			"type": "shell",
+			"command": "python3 pipeline/build_dataset.py --config config/config.yaml --months 13 --force-full-rebuild --no-retain-full-history --output-dir data/db",
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint - stylish"
+			],
+			"group": "build"
+		}
+	]
+}

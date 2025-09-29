@@ -1,0 +1,26 @@
+{
+  "model_type": "CatBoost",
+  "timeframe": "30m",
+  "training_timestamp": "20250927_015742",
+  "metric_value": 0.942630185348632,
+  "metric_name": "accuracy",
+  "features_count": 135,
+  "features_hash": "02511b7198ef306c2600fd80115d72dd8b49d994c6efee9167748c4f9f9b96f0",
+  "features_hash_algorithm": "sha256",
+  "features_version": "20250927_015742",
+  "ma_features_enabled": true,
+  "ma_periods": [
+    4,
+    12
+  ],
+  "bb_periods": [
+    48,
+    96
+  ],
+  "model_file": "btc_30m_catboost_direction_h5.cbm",
+  "scaler_file": "btc_30m_scaler_direction_h5.joblib",
+  "features_file": "btc_30m_catboost_features_direction_h5.txt",
+  "overwrite_mode": true,
+  "target_name": "direction_h5",
+  "task_type": "classification"
+}

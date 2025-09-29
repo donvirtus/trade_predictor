@@ -1,0 +1,54 @@
+###############################################################################
+# Configuration without MA features - Example
+###############################################################################
+
+# Data and Binance API configuration
+data:
+  symbol: BTCUSDT
+
+binance:
+  base_url: "https://api.binance.com"
+  
+pairs:
+  - BTCUSDT
+
+timeframes:
+  - 5m
+  - 15m
+  - 1h
+
+months: 18  # jumlah bulan historis yang diambil
+
+fetch:
+  # Opsi historis panjang (opsional). Jika 'years' atau 'start' diisi maka override 'months'.
+  years: 1.5          # jumlah tahun historis (18 bulan terakhir)
+  start: null         # ISO8601 (misal: 2022-01-01T00:00:00Z) jika ingin titik awal spesifik
+  end: null           # ISO8601 (default: now, otomatis di-trim ke last closed candle)
+  limit: 1000         # limit per request (sesuaikan jika ingin 1500 bila didukung)
+  tail_latest_iters: 4   # berapa kali tarik ulang batch terbaru tanpa since
+  overlap_factor: 50      # banyak candle (kelipatan timeframe) untuk refetch overlap akhir
+  gap_tolerance_factor: 1.5  # faktor toleransi gap (1.5 * timeframe)
+  incremental: true      # ENABLED untuk continuous updates dan testing logging
+
+# Indicator params
+bb_periods: [48, 96]
+bb_devs: [1.0, 2.0]
+
+# Moving Average Configuration - DISABLED
+ma_periods: []           # Empty array = no MA features
+enable_ma_features: false # Completely disable MA features
+
+macd_params: [12, 26, 9]
+
+adx_period: 14
+volatility_period: 5
+price_range_period: 5
+lagged_periods: [2]
+
+target:
+  horizon: 20
+  sideways_threshold_pct: 1.0
+
+external:
+  enable_coingecko: false
+  coin_id: bitcoin

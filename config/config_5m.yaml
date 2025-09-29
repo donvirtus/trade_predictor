@@ -1,0 +1,77 @@
+###############################################################################
+# Config khusus 5m (override minimal untuk rebuild cepat)
+###############################################################################
+
+data:
+  symbol: BTCUSDT
+  market_type: future
+
+binance:
+  base_url: "https://api.binance.com"
+
+pairs:
+  - BTCUSDT
+
+timeframes:
+  - 5m
+
+months: 13
+
+force_full_rebuild: true
+retain_full_history: false
+
+fetch:
+  years: null
+  start: null
+  end: null
+  limit: 1000
+  tail_latest_iters: 4
+  overlap_factor: 50
+  gap_tolerance_factor: 1.5
+  incremental: false
+
+bb_periods: [48, 96]
+bb_devs: [1.0, 2.0]
+
+ma_periods: [4, 12]
+enable_ma_features: true
+
+macd_params: [12, 26, 9]
+
+adx_period: 14
+volatility_period: 5
+price_range_period: 5
+lagged_periods: [2]
+
+target:
+  horizon: 20
+  sideways_threshold_pct: 1.0
+
+multi_horizon:
+  horizons: [1, 5, 20]
+  enable_extremes: true
+  include_time_to: false
+  rr_min: 1.2
+
+external:
+  enable_coingecko: false
+  enable_coinmetrics: false
+  enable_dune: false
+  dune_query_ids: []
+
+output:
+  sqlite_db: data/db/preprocessed.sqlite
+
+prediction:
+  enable_realtime_fetch: true
+  lookback_days: 14
+  lookback_candles: null
+  api_limit: 1000
+  gap_tolerance: 1.5
+  use_training_config: true
+  fallback_to_database: false
+  database_fallback_rows: 300
+
+###############################################################################
+# End
+###############################################################################

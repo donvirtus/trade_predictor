@@ -1,0 +1,49 @@
+# Temporary config for 5m testing
+data:
+  symbol: BTCUSDT
+  market_type: future
+
+binance:
+  base_url: "https://api.binance.com"
+  
+pairs:
+  - BTCUSDT
+
+timeframes:
+  - 5m
+
+months: 1
+
+force_full_rebuild: true
+retain_full_history: false
+
+fetch:
+  limit: 1000
+  incremental: false
+
+bb_periods: [24]
+bb_devs: [2.0]
+ma_periods: [4]
+enable_ma_features: true
+
+target:
+  horizon: 20
+  sideways_threshold_pct: 1.0
+  adaptive_thresholds:
+    enabled: true
+    base_timeframe: "1h"
+    multipliers:
+      "5m": 0.3
+
+external:
+  enable_coingecko: false
+  enable_coinmetrics: false
+  enable_dune: false
+
+multi_horizon:
+  horizons: [5, 20]
+  enable_extremes: false
+  include_time_to: false
+
+output:
+  sqlite_db: data/test_db/preprocessed.sqlite

@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-09-29",
+  "comparison_results": {
+    "5m": {
+      "auto": 1.689,
+      "manual": 0.3,
+      "diff_pct": 463.0
+    },
+    "15m": {
+      "auto": 0.999,
+      "manual": 0.6,
+      "diff_pct": 66.5
+    },
+    "1h": {
+      "auto": 1.0,
+      "manual": 1.0,
+      "diff_pct": 0.0
+    },
+    "2h": {
+      "auto": 0.129,
+      "manual": 1.4,
+      "diff_pct": -90.8
+    },
+    "4h": {
+      "auto": 0.148,
+      "manual": 2.0,
+      "diff_pct": -92.6
+    },
+    "6h": {
+      "auto": 0.199,
+      "manual": 2.5,
+      "diff_pct": -92.0
+    }
+  },
+  "volatility_data": {
+    "5m": 0.008349,
+    "15m": 0.014121,
+    "1h": 0.014103,
+    "2h": 0.109148,
+    "4h": 0.094989,
+    "6h": 0.070871
+  },
+  "insights": [
+    "Auto-calculation menunjukkan inverse relationship dengan volatility",
+    "Manual values terlalu naif dengan linear increase",
+    "Higher frequency timeframes butuh threshold lebih tinggi",
+    "Lower frequency timeframes butuh threshold lebih rendah",
+    "Perlu smoothing untuk extreme values"
+  ],
+  "next_steps": [
+    "Implement min/max clipping yang lebih conservative",
+    "Test impact pada target distribution",
+    "Evaluate trading performance dengan auto vs manual",
+    "Fine-tune smoothing parameters"
+  ]
+}

@@ -1,0 +1,49 @@
+###############################################################################
+# Test configuration for separate timeframe approach (smaller dataset)
+###############################################################################
+
+pairs:
+  - BTCUSDT
+
+timeframes:
+  - 5m
+  - 15m
+
+months: 1  # Keep small for testing
+
+fetch:
+  years: null         # Use months instead for quick test
+  start: null
+  end: null
+  limit: 1000
+  tail_latest_iters: 2   # Reduced for faster testing
+  overlap_factor: 20      # Reduced for faster testing
+  gap_tolerance_factor: 1.5
+  incremental: false      # Fresh start
+
+# Indicator params (same as before)
+bb_periods: [48, 96]
+bb_devs: [1.0, 2.0]
+ma_periods: [6]
+macd_params: [12, 26, 9]
+
+adx_period: 14
+volatility_period: 5
+price_range_period: 5
+lagged_periods: [2]
+
+target:
+  horizon: 20
+  sideways_threshold_pct: 1.0
+
+external:
+  enable_coingecko: false
+  coin_id: bitcoin
+  enable_coinmetrics: false
+  coinmetrics_asset: btc
+  coinmetrics_metrics: [AdrActCnt]
+  enable_dune: false
+  dune_query_ids: []
+
+output:
+  sqlite_db: data/db/preprocessed.sqlite  # Not used in v2 approach

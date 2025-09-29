@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": "/home/donvirtus/miniconda3/envs/projects/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "terminal.integrated.env.linux": {
+    "PYTHONUNBUFFERED": "1"
+  }
+}

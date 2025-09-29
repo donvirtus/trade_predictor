@@ -1,0 +1,72 @@
+{
+  "timeframe": "1h",
+  "model_type": "XGBoost",
+  "targets": [
+    {
+      "target_name": "direction_h1",
+      "model_file": "btc_1h_xgboost_direction_h1.json",
+      "scaler_file": "btc_1h_scaler_direction_h1.joblib",
+      "features_file": "btc_1h_xgboost_features_direction_h1.txt",
+      "metadata_file": "btc_1h_xgboost_direction_h1_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.9837837837837838,
+      "task_type": "classification",
+      "timestamp": "20250927_112218"
+    },
+    {
+      "target_name": "direction_h5",
+      "model_file": "btc_1h_xgboost_direction_h5.json",
+      "scaler_file": "btc_1h_scaler_direction_h5.joblib",
+      "features_file": "btc_1h_xgboost_features_direction_h5.txt",
+      "metadata_file": "btc_1h_xgboost_direction_h5_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.8918918918918919,
+      "task_type": "classification",
+      "timestamp": "20250927_112223"
+    },
+    {
+      "target_name": "direction_h20",
+      "model_file": "btc_1h_xgboost_direction_h20.json",
+      "scaler_file": "btc_1h_scaler_direction_h20.joblib",
+      "features_file": "btc_1h_xgboost_features_direction_h20.txt",
+      "metadata_file": "btc_1h_xgboost_direction_h20_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.8864864864864865,
+      "task_type": "classification",
+      "timestamp": "20250927_112236"
+    },
+    {
+      "target_name": "direction",
+      "model_file": "btc_1h_xgboost_direction.json",
+      "scaler_file": "btc_1h_scaler_direction.joblib",
+      "features_file": "btc_1h_xgboost_features_direction.txt",
+      "metadata_file": "btc_1h_xgboost_direction_metadata.json",
+      "metric_name": "accuracy",
+      "metric_value": 0.8864864864864865,
+      "task_type": "classification",
+      "timestamp": "20250927_112254"
+    },
+    {
+      "target_name": "future_max_high_h20",
+      "model_file": "btc_1h_xgboost_max_high_h20.json",
+      "scaler_file": "btc_1h_scaler_max_high_h20.joblib",
+      "features_file": "btc_1h_xgboost_features_max_high_h20.txt",
+      "metadata_file": "btc_1h_xgboost_max_high_h20_metadata.json",
+      "metric_name": "rmse",
+      "metric_value": 0.0027410210370613364,
+      "task_type": "regression",
+      "timestamp": "20250927_112337"
+    },
+    {
+      "target_name": "future_min_low_h20",
+      "model_file": "btc_1h_xgboost_min_low_h20.json",
+      "scaler_file": "btc_1h_scaler_min_low_h20.joblib",
+      "features_file": "btc_1h_xgboost_features_min_low_h20.txt",
+      "metadata_file": "btc_1h_xgboost_min_low_h20_metadata.json",
+      "metric_name": "rmse",
+      "metric_value": 0.002847640583859459,
+      "task_type": "regression",
+      "timestamp": "20250927_112348"
+    }
+  ]
+}

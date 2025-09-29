@@ -1,0 +1,11 @@
+--2025-09-29 06:14:37--  https://dl.winehq.org/wine-builds/winehq.key
+Resolving dl.winehq.org (dl.winehq.org)... 146.75.46.217, 2a04:4e42:7b::729
+Connecting to dl.winehq.org (dl.winehq.org)|146.75.46.217|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3212 (3.1K) [application/pgp-keys]
+Saving to: ‘STDOUT’
+
+-                              0%[                                             ]       0  --.-KB/s               -                            100%[============================================>]   3.14K  --.-KB/s    in 0s      
+
+2025-09-29 06:14:37 (33.8 MB/s) - written to stdout [3212/3212]
+
