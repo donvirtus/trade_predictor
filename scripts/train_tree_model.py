@@ -20,7 +20,7 @@ import hashlib
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from utils.logging import get_logger
+from utils.logger_config import get_logger
 from utils.config import load_config
 from utils.path_utils import generate_db_path, generate_model_filename, generate_metadata_filename, get_pair_from_config
 from sklearn.preprocessing import StandardScaler
@@ -49,16 +49,21 @@ except ImportError:
 logger = get_logger('train_universal_model')
 
 class UniversalModelTrainer:
-    def __init__(self, timeframe: str, models_dir: str = "models", pair: str = None, config = None,
+    def __init__(self, timeframe: str, models_dir: str = "models/tree_models", pair: str = None, config = None,
                  config_path: str = None, overwrite: bool = False, target_name: str = 'direction'):
         self.timeframe = timeframe
         self.models_dir = models_dir
         self.overwrite = overwrite
         self.target_name = target_name
         
+        # Generate timestamp for this training session
+        from datetime import datetime
+        self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
         # Load config jika diperlukan
         if config is None and config_path:
             config = load_config(config_path)
+        self.config = config  # Store config for metadata
         
         self.pair = pair or (get_pair_from_config(config) if config else 'BTCUSDT')
         
@@ -169,17 +174,7 @@ class UniversalModelTrainer:
             logger.warning("LightGBM not available")
             return None, 0.0
         logger.info("Training LightGBM model ...")
-        # Progress bar for boosting rounds
-        total_rounds = 1000
-        pbar = tqdm(total=total_rounds, desc="LightGBM Training", leave=False)
-
-        def tqdm_callback(env):
-            # Called every iteration
-            try:
-                pbar.update(1)
-            except Exception:
-                pass
-            return False
+        
         # Create datasets (ensure feature names preserved)
         feature_names = list(X_train.columns) if hasattr(X_train, 'columns') else None
         train_data = lgb.Dataset(X_train, label=y_train, feature_name=feature_names)
@@ -197,7 +192,8 @@ class UniversalModelTrainer:
                 'bagging_fraction': 0.8,
                 'bagging_freq': 5,
                 'verbose': -1,
-                'random_state': 42
+                'random_state': 42,
+                'n_jobs': -1  # Use all CPU cores
             }
         else:
             params = {
@@ -211,20 +207,18 @@ class UniversalModelTrainer:
                 'bagging_fraction': 0.8,
                 'bagging_freq': 5,
                 'verbose': -1,
-                'random_state': 42
+                'random_state': 42,
+                'n_jobs': -1  # Use all CPU cores
             }
         
         # Train
-        try:
-            model = lgb.train(
-                params,
-                train_data,
-                valid_sets=[valid_data],
-                num_boost_round=total_rounds,
-                callbacks=[lgb.early_stopping(100), lgb.log_evaluation(0), tqdm_callback]
-            )
-        finally:
-            pbar.close()
+        model = lgb.train(
+            params,
+            train_data,
+            valid_sets=[valid_data],
+            num_boost_round=1000,
+            callbacks=[lgb.early_stopping(100), lgb.log_evaluation(50)]  # Show progress every 50 rounds
+        )
         
         # Evaluate
         if getattr(self, 'task_type', 'classification') == 'regression':
@@ -268,7 +262,8 @@ class UniversalModelTrainer:
                 random_state=42,
                 objective='reg:squarederror',
                 eval_metric='rmse',
-                early_stopping_rounds=100
+                early_stopping_rounds=100,
+                n_jobs=-1  # Use all CPU cores
             )
         else:
             model = XGBClassifier(
@@ -280,7 +275,8 @@ class UniversalModelTrainer:
                 random_state=42,
                 objective='multi:softprob',
                 eval_metric='mlogloss',
-                early_stopping_rounds=100
+                early_stopping_rounds=100,
+                n_jobs=-1  # Use all CPU cores
             )
         # Progress bar via XGBoost callback
         try:
@@ -355,7 +351,8 @@ class UniversalModelTrainer:
                 loss_function='RMSE',
                 random_seed=42,
                 verbose=50,
-                early_stopping_rounds=100
+                early_stopping_rounds=100,
+                thread_count=-1  # Use all CPU cores
             )
         else:
             model = cb.CatBoostClassifier(
@@ -366,7 +363,8 @@ class UniversalModelTrainer:
                 eval_metric='Accuracy',
                 random_seed=42,
                 verbose=50,
-                early_stopping_rounds=100
+                early_stopping_rounds=100,
+                thread_count=-1  # Use all CPU cores
             )
         
         # Train

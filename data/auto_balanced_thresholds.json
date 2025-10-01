@@ -1,84 +1,16 @@
 {
   "individual_results": {
-    "BTC 1h": {
-      "optimal_threshold": 0.406,
-      "distribution": {
-        "UP": 36.5,
-        "SIDEWAYS": 36.2,
-        "DOWN": 27.3
-      },
-      "balance_score": 92.4,
-      "trading_percentage": 63.8,
-      "total_samples": 682,
-      "method": "binary_search",
-      "target_distribution": {
-        "UP": 33.0,
-        "SIDEWAYS": 34.0,
-        "DOWN": 33.0
-      }
-    },
-    "ETH 1h": {
-      "optimal_threshold": 0.713,
-      "distribution": {
-        "UP": 25.4,
-        "SIDEWAYS": 38.9,
-        "DOWN": 35.8
-      },
-      "balance_score": 89.8,
-      "trading_percentage": 61.1,
-      "total_samples": 682,
-      "method": "binary_search",
-      "target_distribution": {
-        "UP": 33.0,
-        "SIDEWAYS": 34.0,
-        "DOWN": 33.0
-      }
-    },
-    "DOGE 1h": {
-      "optimal_threshold": 1.325,
+    "BTC 15M": {
+      "optimal_threshold": 0.15,
       "distribution": {
         "UP": 35.6,
-        "SIDEWAYS": 33.7,
-        "DOWN": 30.6
+        "SIDEWAYS": 30.2,
+        "DOWN": 34.3
       },
-      "balance_score": 96.5,
-      "trading_percentage": 66.3,
-      "total_samples": 682,
-      "method": "binary_search",
-      "target_distribution": {
-        "UP": 33.0,
-        "SIDEWAYS": 34.0,
-        "DOWN": 33.0
-      }
-    },
-    "BTC 5m": {
-      "optimal_threshold": 0.105,
-      "distribution": {
-        "UP": 33.7,
-        "SIDEWAYS": 35.6,
-        "DOWN": 30.7
-      },
-      "balance_score": 96.9,
-      "trading_percentage": 64.4,
+      "balance_score": 93.5,
+      "trading_percentage": 69.8,
       "total_samples": 1980,
-      "method": "binary_search",
-      "target_distribution": {
-        "UP": 33.0,
-        "SIDEWAYS": 34.0,
-        "DOWN": 33.0
-      }
-    },
-    "ETH 5m": {
-      "optimal_threshold": 0.177,
-      "distribution": {
-        "UP": 34.0,
-        "SIDEWAYS": 30.1,
-        "DOWN": 35.9
-      },
-      "balance_score": 94.8,
-      "trading_percentage": 69.9,
-      "total_samples": 1980,
-      "method": "binary_search",
+      "method": "auto_pipeline_analysis",
       "target_distribution": {
         "UP": 33.0,
         "SIDEWAYS": 34.0,
@@ -86,11 +18,12 @@
       }
     }
   },
-  "average_optimal_threshold": 0.545,
+  "average_optimal_threshold": 0.15,
   "recommendation": {
-    "threshold": 0.545,
-    "description": "Auto-calculated optimal threshold for balanced distribution"
+    "threshold": 0.15,
+    "description": "Auto-generated optimal threshold for balanced distribution"
   },
-  "generated_at": "2025-09-30T00:28:38.220674",
-  "balancer_version": "1.0"
+  "generated_at": "2025-10-01T02:46:19.289102",
+  "balancer_version": "2.0_auto_pipeline",
+  "generation_method": "automated_analysis"
 }

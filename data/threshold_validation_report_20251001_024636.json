@@ -1,0 +1,13 @@
+{
+  "pairs_analyzed": [
+    "BTCUSDT_15m"
+  ],
+  "threshold_applied": {},
+  "distribution_quality": {
+    "BTCUSDT_15m": 64.4192838754973
+  },
+  "overall_score": 64.4192838754973,
+  "recommendations": [
+    "Re-run auto-optimization with more data"
+  ]
+}

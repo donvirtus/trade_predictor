@@ -13,7 +13,7 @@ class Config:
     # Default behavior when flags are absent: force full rebuild ON, retain full history OFF
     force_full_rebuild: bool = True
     retain_full_history: bool = False
-    bb_periods: list = field(default_factory=lambda: [48])
+    bb_periods: list = field(default_factory=lambda: [24, 72])
     bb_devs: list = field(default_factory=lambda: [2.0])
     ma_periods: list = field(default_factory=list)
     price_range_period: int = 5
@@ -29,6 +29,10 @@ class Config:
     target: dict = field(default_factory=dict)
     external: dict = field(default_factory=dict)
     multi_horizon: dict = field(default_factory=dict)
+    
+    # Realtime prediction and confidence settings
+    realtime: dict = field(default_factory=dict)
+    prediction: dict = field(default_factory=dict)
 
     # Optional output / misc sections
     output: dict = field(default_factory=dict)

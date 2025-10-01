@@ -36,25 +36,43 @@ from pathlib import Path
 
 # Restore internal project utilities
 from utils.config import load_config
-from utils.logging import get_logger
+from utils.logger_config import get_logger
+from utils.professional_formatter import ProfessionalSignalFormatter
 
 # =============================================================
 # Utility / Indicator Integration Functions (restored)
 # =============================================================
 
-def integrate_bb_signals(bb_analysis, slope_analysis=None):
+def integrate_bb_signals(bb_analysis, slope_analysis=None, anchor_target: Optional[int] = None):
     """Integrate Bollinger Band signals with weighting.
+
+    Dynamic weighting based on available BB periods in bb_analysis.
+    Higher periods get higher weights. Example weights for top 3: 0.5, 0.3, 0.2
 
     Returns dict: {integrated_signal, confidence, score}
     """
-    signal_weights = {
-        'bb_96': 0.5,
-        'bb_48': 0.3,
-        'bb_24': 0.2
-    }
-    if 'bb_24' not in bb_analysis:
-        signal_weights['bb_96'] = 0.6
-        signal_weights['bb_48'] = 0.4
+    # Build dynamic weights from available periods (keys like 'bb_24', 'bb_48', ...)
+    periods = []
+    for k in (bb_analysis or {}).keys():
+        try:
+            periods.append(int(str(k).split('_')[1]))
+        except Exception:
+            continue
+    periods = sorted(set(periods), reverse=True)
+
+    if not periods:
+        # No BB info, return neutral
+        return {'integrated_signal': 'NEUTRAL', 'confidence': 0.5, 'score': 0.0}
+
+    # Assign base weights by rank (normalize later)
+    base_by_rank = [0.5, 0.3, 0.2]
+    tail_weight = 0.1
+    weights = {}
+    for idx, p in enumerate(periods):
+        w = base_by_rank[idx] if idx < len(base_by_rank) else tail_weight
+        weights[f'bb_{p}'] = w
+    total = sum(weights.values()) or 1.0
+    signal_weights = {k: v/total for k, v in weights.items()}
 
     signal_scores = {
         'STRONG BUY': 2,
@@ -77,8 +95,35 @@ def integrate_bb_signals(bb_analysis, slope_analysis=None):
 
     normalized_score = weighted_score / total_weight if total_weight else 0
 
-    if slope_analysis and 'bb_48' in slope_analysis:
-        trend = slope_analysis['bb_48'].get('trend', 'FLAT')
+    # Trend adjustment uses anchor period: closest to anchor_target if provided, else highest available period
+    if slope_analysis:
+        try:
+            slope_keys = list((slope_analysis or {}).keys())
+            anchor_key = None
+            if slope_keys:
+                if anchor_target is not None:
+                    # choose closest to anchor_target
+                    candidates = []
+                    for k in slope_keys:
+                        try:
+                            p = int(str(k).split('_')[1])
+                            candidates.append((k, abs(p - int(anchor_target))))
+                        except Exception:
+                            continue
+                    if candidates:
+                        anchor_key = sorted(candidates, key=lambda x: x[1])[0][0]
+                if anchor_key is None:
+                    # fallback to largest period available
+                    try:
+                        anchor_key = sorted(slope_keys, key=lambda k: int(str(k).split('_')[1]), reverse=True)[0]
+                    except Exception:
+                        anchor_key = slope_keys[0]
+            if anchor_key and anchor_key in slope_analysis:
+                trend = slope_analysis[anchor_key].get('trend', 'FLAT')
+            else:
+                trend = 'FLAT'
+        except Exception:
+            trend = 'FLAT'
         if trend == 'UPTREND' and normalized_score > 0:
             normalized_score = min(1.0, normalized_score * 1.2)
         elif trend == 'DOWNTREND' and normalized_score < 0:
@@ -119,24 +164,27 @@ def resolve_signal_conflict(bb_signal, ml_prediction, ml_confidence, bb_confiden
     ml_signal_map = {0: "SELL", 1: "HOLD", 2: "BUY"}
     ml_signal = ml_signal_map.get(ml_prediction, "UNKNOWN")
     
+    # Get configurable confidence thresholds
+    thresholds = EnhancedPredictionSystem._get_confidence_thresholds(EnhancedPredictionSystem)
+    
     # Check for extreme oversold/overbought conditions with signal conflicts
     extreme_condition = False
     if (bb_signal in ['STRONG BUY'] and ml_signal == 'SELL') or \
        (bb_signal in ['STRONG SELL'] and ml_signal == 'BUY'):
         extreme_condition = True
     
-    # Calculate weighted decision based on confidence levels
-    if extreme_condition and ml_confidence < 0.85:
+    # Calculate weighted decision based on configurable confidence levels
+    if extreme_condition and ml_confidence < thresholds['extreme_condition_threshold']:
         # In extreme conditions, trust BB more unless ML is very confident
         bb_weight = 0.7
         ml_weight = 0.3
         reasoning = f"Extreme market condition: {bb_signal}, trusting BB signals"
     else:
         # Normal weighting - ML has higher weight due to trained nature
-        if ml_confidence > 0.8:
+        if ml_confidence > thresholds['high_confidence']:
             ml_weight = 0.8
             bb_weight = 0.2
-        elif ml_confidence > 0.6:
+        elif ml_confidence > thresholds['low_confidence']:
             ml_weight = 0.7
             bb_weight = 0.3
         else:
@@ -189,7 +237,7 @@ def resolve_signal_conflict(bb_signal, ml_prediction, ml_confidence, bb_confiden
         position = "WAIT"
     
     # Override recommendation in extreme conditions with conflicting signals
-    if conflict and extreme_condition and ml_confidence < 0.9:
+    if conflict and extreme_condition and ml_confidence < thresholds['conflict_resolution_threshold']:
         if bb_signal in ["STRONG BUY", "BUY"]:
             final_signal = "NEUTRAL LEANING BUY"
             position = "WAIT"
@@ -246,8 +294,36 @@ def add_trading_outputs(df, live_price, ml_prediction, ml_confidence):
             'alerts': ['analytics_error']
         }
 
-def analyze_bb_slope(df, period=48, window=5):
+def analyze_bb_slope(df, period=None, window=None):
     """Simplified slope analysis restoration."""
+    # Use intelligent default period if not provided
+    if period is None:
+        # Try to get from config, else use median of typical BB periods
+        from utils.config import load_config
+        try:
+            config = load_config()
+            bb_periods = getattr(config, 'bb_periods', [24, 72])
+            if bb_periods:
+                # Use median of configured periods as intelligent default
+                import statistics
+                period = int(statistics.median(bb_periods))
+            else:
+                period = 48  # Final fallback
+        except Exception:
+            period = 48  # Safe fallback
+    
+    # Use configurable window from config if not provided
+    if window is None:
+        from utils.config import load_config
+        try:
+            config = load_config()
+            bb_slope_config = getattr(config, 'bb_slope', {}) or {}
+            if isinstance(bb_slope_config, dict):
+                window = int(bb_slope_config.get('window', 5))
+            else:
+                window = 5
+        except Exception:
+            window = 5  # Safe fallback
     try:
         if 'close' not in df.columns or len(df) < period + window:
             return {'trend': 'FLAT', 'slope': 0, 'bandwidth_trend': 'STABLE'}
@@ -335,6 +411,91 @@ class EnhancedPredictionSystem:
             self.logger.warning(f"Multi-model load skipped: {e}")
         # Paper-trade engine state holder
         self._paper_engine = None
+        # Preferred BB slope anchor period (can be overridden via CLI)
+        self.bb_anchor: Optional[int] = None
+
+    def _resolve_bb_anchor(self) -> int:
+        """Resolve the preferred BB slope anchor period.
+
+        Priority:
+        1) Instance override (self.bb_anchor)
+        2) Config key 'bb_anchor' (direct or under _extra.bb_anchor)
+        3) Median of configured bb_periods
+        4) Fallback to 48 as a safe default
+        """
+        # 1) Instance override
+        try:
+            if getattr(self, 'bb_anchor', None) is not None:
+                return int(self.bb_anchor)  # type: ignore[arg-type]
+        except Exception:
+            pass
+        # 2) Config
+        try:
+            if hasattr(self.config, 'bb_anchor') and getattr(self.config, 'bb_anchor') is not None:  # type: ignore[attr-defined]
+                return int(getattr(self.config, 'bb_anchor'))
+        except Exception:
+            pass
+        try:
+            extras = getattr(self.config, '_extra', {}) or {}
+            if isinstance(extras, dict) and extras.get('bb_anchor') is not None:
+                return int(extras.get('bb_anchor'))
+        except Exception:
+            pass
+        # 3) Median of bb_periods
+        try:
+            periods = list(getattr(self.config, 'bb_periods', []) or [])
+            periods = sorted({int(p) for p in periods})
+            if periods:
+                if len(periods) % 2 == 1:
+                    return periods[len(periods)//2]
+                else:
+                    # For even number of periods, return the actual median value
+                    median_val = (periods[len(periods)//2 - 1] + periods[len(periods)//2]) / 2.0
+                    return int(median_val)
+        except Exception:
+            pass
+        # 4) Safe default
+        return 48
+
+    def _get_confidence_thresholds(self) -> Dict[str, float]:
+        """Get configurable confidence thresholds from config with sensible defaults."""
+        try:
+            realtime_config = getattr(self.config, 'realtime', {}) or {}
+            if isinstance(realtime_config, dict):
+                return {
+                    'confidence_threshold': float(realtime_config.get('confidence_threshold', 0.7)),
+                    'alert_high_confidence': float(realtime_config.get('alert_high_confidence', 0.85)),
+                    'high_confidence': float(realtime_config.get('alert_high_confidence', 0.9)),
+                    'medium_confidence': float(realtime_config.get('confidence_threshold', 0.7)),
+                    'very_high_confidence': 0.95,  # Fixed for extreme cases
+                    'low_confidence': 0.6,         # Fixed for low confidence cases
+                    'extreme_condition_threshold': 0.85,  # For extreme market conditions
+                    'conflict_resolution_threshold': 0.9   # For resolving ML vs BB conflicts
+                }
+        except Exception:
+            pass
+        
+        # Default fallback values if config reading fails
+        return {
+            'confidence_threshold': 0.7,
+            'alert_high_confidence': 0.85,
+            'high_confidence': 0.9,
+            'medium_confidence': 0.7,
+            'very_high_confidence': 0.95,
+            'low_confidence': 0.6,
+            'extreme_condition_threshold': 0.85,
+            'conflict_resolution_threshold': 0.9
+        }
+
+    def _get_slope_window(self) -> int:
+        """Get configurable BB slope analysis window from config."""
+        try:
+            bb_slope_config = getattr(self.config, 'bb_slope', {}) or {}
+            if isinstance(bb_slope_config, dict):
+                return int(bb_slope_config.get('window', 5))
+        except Exception:
+            pass
+        return 5  # Default fallback
 
     # ---------------------- Paper Trade Engine ----------------------
     class _PaperTradeEngine:
@@ -729,7 +890,7 @@ class EnhancedPredictionSystem:
         }
 
     # ---------------- Helper: compute TP/SL from extremes or BB ----------------
-    def _compute_tp_sl(self, live_price: float, bb_levels_48: dict | None, up_pct: Optional[float], dn_pct: Optional[float], direction: str) -> Tuple[float, float, Optional[float]]:
+    def _compute_tp_sl(self, live_price: float, bb_levels_primary: dict | None, up_pct: Optional[float], dn_pct: Optional[float], direction: str) -> Tuple[float, float, Optional[float]]:
         entry = live_price
         if up_pct is not None and dn_pct is not None and up_pct > 0 and dn_pct > 0:
             if direction == 'LONG':
@@ -741,8 +902,8 @@ class EnhancedPredictionSystem:
                 sl = entry * (1 + up_pct/100.0)
                 rr = (dn_pct / up_pct) if up_pct > 0 else None
             return tp, sl, rr
-        # Fallback BB48
-        bb = bb_levels_48 or {}
+        # Fallback to primary BB levels (dynamic period)
+        bb = bb_levels_primary or {}
         upper_2 = bb.get('upper_2', entry*1.028)
         upper_1 = bb.get('upper_1', entry*1.018)
         middle  = bb.get('middle', entry)
@@ -1081,13 +1242,53 @@ class EnhancedPredictionSystem:
                 'signals': []
             }
             
-            # Get BB levels for multiple periods
-            for period in [48, 96]:
-                bb_upper_2 = row.get(f'bb_{period}_upper_2.0')
-                bb_upper_1 = row.get(f'bb_{period}_upper_1.0')
+            # Get BB levels for multiple periods (from config), default fallback to [48,96]
+            cfg_periods = []
+            try:
+                cfg_periods = list(getattr(self.config, 'bb_periods', []) or [])
+            except Exception:
+                cfg_periods = []
+            if not cfg_periods:
+                # Dynamic fallback using default config bb_periods
+                from utils.config import load_config
+                try:
+                    fallback_config = load_config()
+                    cfg_periods = list(getattr(fallback_config, 'bb_periods', [24, 72]) or [24, 72])
+                except Exception:
+                    cfg_periods = [24, 72]  # Final fallback matching config.yaml
+            # Ensure ints and unique
+            try:
+                cfg_periods = sorted({int(p) for p in cfg_periods})
+            except Exception:
+                # If conversion fails, use dynamic fallback again
+                from utils.config import load_config
+                try:
+                    fallback_config = load_config()
+                    cfg_periods = [24, 72]  # Safe fallback matching config.yaml
+                except Exception:
+                    cfg_periods = [24, 72]
+
+            # We prefer using two deviations if available from config; else use [1.0, 2.0]
+            cfg_devs = []
+            try:
+                cfg_devs = list(getattr(self.config, 'bb_devs', []) or [])
+            except Exception:
+                cfg_devs = []
+            if not cfg_devs:
+                cfg_devs = [1.0, 2.0]
+            # normalize to strings for column lookup (e.g., '1.0', '2.0')
+            cfg_devs_str = [str(float(d)) for d in cfg_devs]
+
+            for period in cfg_periods:
+                # Build column names defensively
                 bb_middle = row.get(f'bb_{period}_middle')
-                bb_lower_1 = row.get(f'bb_{period}_lower_1.0')
-                bb_lower_2 = row.get(f'bb_{period}_lower_2.0')
+                # Find best-available devs: prefer 1.0 and 2.0 if present in cfg_devs
+                dev_hi = '2.0' if '2.0' in cfg_devs_str else (cfg_devs_str[-1] if cfg_devs_str else '2.0')
+                dev_lo = '1.0' if '1.0' in cfg_devs_str else (cfg_devs_str[0] if cfg_devs_str else '1.0')
+                bb_upper_2 = row.get(f'bb_{period}_upper_{dev_hi}')
+                bb_upper_1 = row.get(f'bb_{period}_upper_{dev_lo}')
+                bb_lower_1 = row.get(f'bb_{period}_lower_{dev_lo}')
+                bb_lower_2 = row.get(f'bb_{period}_lower_{dev_hi}')
                 bb_squeeze = row.get(f'bb_{period}_squeeze_flag', 0)
                 
                 if bb_upper_2 is not None:
@@ -1101,12 +1302,17 @@ class EnhancedPredictionSystem:
                     }
                     
                     # Calculate distances to each level using LIVE price
+                    def _dist(a, b):
+                        try:
+                            return abs(((a - b) / b) * 100)
+                        except Exception:
+                            return float('inf')
                     distances = {
-                        f'BB{period} Upper(2σ)': abs(((live_price - bb_upper_2) / bb_upper_2) * 100),
-                        f'BB{period} Upper(1σ)': abs(((live_price - bb_upper_1) / bb_upper_1) * 100),
-                        f'BB{period} Middle': abs(((live_price - bb_middle) / bb_middle) * 100),
-                        f'BB{period} Lower(1σ)': abs(((live_price - bb_lower_1) / bb_lower_1) * 100),
-                        f'BB{period} Lower(2σ)': abs(((live_price - bb_lower_2) / bb_lower_2) * 100),
+                        f'BB{period} Upper(2σ)': _dist(live_price, bb_upper_2),
+                        f'BB{period} Upper(1σ)': _dist(live_price, bb_upper_1),
+                        f'BB{period} Middle': _dist(live_price, bb_middle),
+                        f'BB{period} Lower(1σ)': _dist(live_price, bb_lower_1),
+                        f'BB{period} Lower(2σ)': _dist(live_price, bb_lower_2),
                     }
                     
                     # Find closest level
@@ -1352,9 +1558,10 @@ class EnhancedPredictionSystem:
         pred_text = prediction_labels[prediction]
         pred_table.add_row("🎯 ML Prediction", f"[{prediction_colors[prediction]}]{pred_text}[/{prediction_colors[prediction]}]", f"Class {prediction}")
         
-        # Confidence
+        # Confidence with configurable thresholds
         confidence_pct = confidence * 100
-        confidence_color = "green" if confidence > 0.8 else "yellow" if confidence > 0.6 else "red"
+        thresholds = self._get_confidence_thresholds()
+        confidence_color = "green" if confidence > thresholds['high_confidence'] else "yellow" if confidence > thresholds['low_confidence'] else "red"
         pred_table.add_row("🎲 Confidence", f"{confidence_pct:.2f}%", f"[{confidence_color}]Model certainty[/{confidence_color}]")
         
         tables.append(pred_table)
@@ -1367,7 +1574,8 @@ class EnhancedPredictionSystem:
         bb_table.add_column("Closest Level", style="dim")
         bb_table.add_column("Distance", style="dim")
         
-        for period_key, period_data in bb_analysis.get('bb_analysis', {}).items():
+        bb_items = list((bb_analysis.get('bb_analysis') or {}).items())
+        for period_key, period_data in bb_items:
             period = period_key.replace('bb_', '')
             position = period_data.get('position', 'Unknown')
             signal = period_data.get('signal', 'HOLD')
@@ -1382,6 +1590,9 @@ class EnhancedPredictionSystem:
                 closest_level.replace(f'BB{period} ', ''),
                 f"{closest_distance:.2f}%"
             )
+        # If no BB rows were added, show N/A row for clarity
+        if len(bb_items) == 0:
+            bb_table.add_row("-", "N/A", "N/A", "N/A", "N/A")
             
         tables.append(bb_table)
         
@@ -1521,10 +1732,23 @@ class EnhancedPredictionSystem:
         slope_analysis = {}
         
         try:
-            # Calculate slope for different BB periods
-            for period in [24, 48, 96]:
-                if len(df) >= period + 5:  # Make sure we have enough data
-                    slope_analysis[f'bb_{period}'] = analyze_bb_slope(df, period=period)
+            # Calculate slope for BB periods from config (fallback to [24,48,96])
+            periods = []
+            try:
+                periods = list(getattr(self.config, 'bb_periods', []) or [])
+            except Exception:
+                periods = []
+            if not periods:
+                # Dynamic fallback using default config bb_periods if available
+                from utils.config import load_config
+                try:
+                    fallback_config = load_config()
+                    periods = list(getattr(fallback_config, 'bb_periods', [24, 72]) or [24, 72])
+                except Exception:
+                    periods = [24, 72]  # Final fallback matching config.yaml
+            for period in sorted({int(p) for p in periods}):
+                if len(df) >= int(period) + 5:  # need enough history
+                    slope_analysis[f'bb_{int(period)}'] = analyze_bb_slope(df, period=int(period))
             
             return slope_analysis
         except Exception as e:
@@ -1541,8 +1765,17 @@ class EnhancedPredictionSystem:
         
         live_price = bb_analysis.get('live_price', 0)
         
-        # Get BB levels for recommendations
-        bb_48_levels = bb_analysis.get('bb_levels', {}).get('bb_48', {})
+        # Get BB levels for recommendations (use primary period from config)
+        bb_levels_all = bb_analysis.get('bb_levels', {}) or {}
+        # Select first available period as primary (sorted by period number)
+        primary_bb_key = None
+        if bb_levels_all:
+            try:
+                sorted_keys = sorted(bb_levels_all.keys(), key=lambda k: int(str(k).split('_')[1]))
+                primary_bb_key = sorted_keys[0] if sorted_keys else None
+            except Exception:
+                primary_bb_key = list(bb_levels_all.keys())[0]
+        primary_bb_levels = bb_levels_all.get(primary_bb_key, {}) if primary_bb_key else {}
         
         # Prediction labels and colors
         prediction_labels = {0: "📉 SELL", 1: "➡️  HOLD", 2: "📈 BUY"}
@@ -1601,8 +1834,11 @@ class EnhancedPredictionSystem:
 
         # Sinyal gabungan ML+BB untuk kebutuhan timing
         try:
+            if getattr(self, 'bb_anchor', None) is None:
+                self.bb_anchor = self._resolve_bb_anchor()
             bb_sig_payload = integrate_bb_signals(bb_analysis.get('bb_analysis', {}) or {},
-                                                  slope_analysis=bb_analysis.get('slope_analysis'))
+                                                  slope_analysis=bb_analysis.get('slope_analysis'),
+                                                  anchor_target=self.bb_anchor)
         except Exception:
             bb_sig_payload = {'integrated_signal': 'NEUTRAL', 'confidence': 0.5}
         resolved = resolve_signal_conflict(
@@ -1638,28 +1874,29 @@ class EnhancedPredictionSystem:
         effective_pred = 1 if rr_gate_triggered else prediction
 
         if effective_pred == 2:  # BUY
-            confidence_level = "🔥 HIGH" if confidence > 0.9 else "⚡ MEDIUM" if confidence > 0.7 else "⚠️  LOW"
+            thresholds = self._get_confidence_thresholds()
+            confidence_level = "🔥 HIGH" if confidence > thresholds['high_confidence'] else "⚡ MEDIUM" if confidence > thresholds['medium_confidence'] else "⚠️  LOW"
             rec_table.add_row(
                 "📈 ENTRY",
                 f"LONG position at ~${live_price:.0f}",
                 f"Confidence: {confidence_level}" + (" | R:R Gate" if rr_gate_triggered else "")
             )
-            # Position sizing
-            if confidence > 0.95:
+            # Position sizing with configurable thresholds
+            if confidence > thresholds['very_high_confidence']:
                 position_size = "2-3% of portfolio"; size_reason = "Very high confidence"
-            elif confidence > 0.85:
+            elif confidence > thresholds['alert_high_confidence']:
                 position_size = "1-2% of portfolio"; size_reason = "High confidence"
             else:
                 position_size = "0.5-1% of portfolio"; size_reason = "Moderate confidence"
             rec_table.add_row("💰 POSITION", position_size, size_reason)
 
             # Risk management (prefer extremes-based TP/SL if available; fallback ke BB)
-            if bb_48_levels:
-                upper_2 = bb_48_levels.get('upper_2', live_price * 1.03)
-                upper_1 = bb_48_levels.get('upper_1', live_price * 1.02)
-                middle = bb_48_levels.get('middle', live_price)
-                lower_1 = bb_48_levels.get('lower_1', live_price * 0.98)
-                lower_2 = bb_48_levels.get('lower_2', live_price * 0.97)
+            if primary_bb_levels:
+                upper_2 = primary_bb_levels.get('upper_2', live_price * 1.03)
+                upper_1 = primary_bb_levels.get('upper_1', live_price * 1.02)
+                middle = primary_bb_levels.get('middle', live_price)
+                lower_1 = primary_bb_levels.get('lower_1', live_price * 0.98)
+                lower_2 = primary_bb_levels.get('lower_2', live_price * 0.97)
                 entry = live_price
                 if up_pct is not None and dn_pct is not None and up_pct > 0 and dn_pct > 0:
                     tp = entry * (1 + up_pct/100.0)
@@ -1685,12 +1922,12 @@ class EnhancedPredictionSystem:
                 f"Bearish signal ({confidence*100:.1f}%)" + (" | R:R Gate" if rr_gate_triggered else "")
             )
             # Risk management (prefer extremes first)
-            if bb_48_levels:
-                upper_2 = bb_48_levels.get('upper_2', live_price * 1.03)
-                upper_1 = bb_48_levels.get('upper_1', live_price * 1.02)
-                middle = bb_48_levels.get('middle', live_price)
-                lower_1 = bb_48_levels.get('lower_1', live_price * 0.98)
-                lower_2 = bb_48_levels.get('lower_2', live_price * 0.97)
+            if primary_bb_levels:
+                upper_2 = primary_bb_levels.get('upper_2', live_price * 1.03)
+                upper_1 = primary_bb_levels.get('upper_1', live_price * 1.02)
+                middle = primary_bb_levels.get('middle', live_price)
+                lower_1 = primary_bb_levels.get('lower_1', live_price * 0.98)
+                lower_2 = primary_bb_levels.get('lower_2', live_price * 0.97)
                 entry = live_price
                 if up_pct is not None and dn_pct is not None and up_pct > 0 and dn_pct > 0:
                     tp = entry * (1 - dn_pct/100.0)
@@ -1776,21 +2013,22 @@ class EnhancedPredictionSystem:
         timing_reason = f"Resolved: {resolved.get('signal','-')} | ML {resolved.get('ml_weight',0):.0%} vs BB {resolved.get('bb_weight',0):.0%} | rr_min={rr_min:.2f}"
         rec_table.add_row("⏰ TIMING", timing, timing_reason)
 
-        # TRIGGER (micro‑playbook) dan TP/SL ringkas
-        rec_table.add_row("TRIGGER LONG", "Breakout + retest di atas BB48 U2σ; band melebar & volume naik.", "Hindari LONG saat menempel band atas tanpa ekspansi.")
-        rec_table.add_row("TRIGGER SHORT", "Rejection/stall di BB48 U1σ/U2σ + struktur mikro bearish.", "SHORT wajar bila RR_SHORT ≥ rr_min dan momentum melemah.")
+        # TRIGGER (micro‑playbook) dan TP/SL ringkas (use primary BB period)
+        primary_period = "BB" + str(int(primary_bb_key.split('_')[1])) if primary_bb_key else "BB24"
+        rec_table.add_row("TRIGGER LONG", f"Breakout + retest di atas {primary_period} U2σ; band melebar & volume naik.", "Hindari LONG saat menempel band atas tanpa ekspansi.")
+        rec_table.add_row("TRIGGER SHORT", f"Rejection/stall di {primary_period} U1σ/U2σ + struktur mikro bearish.", "SHORT wajar bila RR_SHORT ≥ rr_min dan momentum melemah.")
         # Tampilkan TP/SL ringkas menggunakan extremes terlebih dahulu (fallback BB)
         def _fmt_price(p):
             try:
                 return f"${p:,.2f}"
             except Exception:
                 return "-"
-        # Siapkan level BB48 untuk fallback
-        upper_2 = bb_48_levels.get('upper_2', None)
-        upper_1 = bb_48_levels.get('upper_1', None)
-        middle = bb_48_levels.get('middle', None)
-        lower_1 = bb_48_levels.get('lower_1', None)
-        lower_2 = bb_48_levels.get('lower_2', None)
+        # Siapkan level primary BB untuk fallback
+        upper_2 = primary_bb_levels.get('upper_2', None)
+        upper_1 = primary_bb_levels.get('upper_1', None)
+        middle = primary_bb_levels.get('middle', None)
+        lower_1 = primary_bb_levels.get('lower_1', None)
+        lower_2 = primary_bb_levels.get('lower_2', None)
         if live_price:
             if up_pct is not None and dn_pct is not None and up_pct > 0 and dn_pct > 0:
                 tp_long = live_price * (1 + up_pct/100.0)
@@ -1802,8 +2040,8 @@ class EnhancedPredictionSystem:
                 sl_long = middle or lower_1 or (live_price*0.972)
                 tp_short = middle or lower_1 or (live_price*0.975)
                 sl_short = upper_2 or upper_1 or (live_price*1.028)
-            rec_table.add_row("TP/SL LONG", f"TP: {_fmt_price(tp_long)} | SL: {_fmt_price(sl_long)}", "Prioritas extremes; fallback BB48.")
-            rec_table.add_row("TP/SL SHORT", f"TP: {_fmt_price(tp_short)} | SL: {_fmt_price(sl_short)}", "Prioritas extremes; fallback BB48.")
+            rec_table.add_row("TP/SL LONG", f"TP: {_fmt_price(tp_long)} | SL: {_fmt_price(sl_long)}", f"Prioritas extremes; fallback {primary_period}.")
+            rec_table.add_row("TP/SL SHORT", f"TP: {_fmt_price(tp_short)} | SL: {_fmt_price(sl_short)}", f"Prioritas extremes; fallback {primary_period}.")
 
         # Rekomendasi ukuran posisi generik
         rec_table.add_row("UKURAN POSISI", "0.25R saat sinyal konflik; 0.5–1.0R bila ML+BB+R:R selaras.", "Kurangi risiko saat bobot ML mendominasi HOLD atau sinyal BB bertentangan.")
@@ -1881,9 +2119,15 @@ class EnhancedPredictionSystem:
         
         # Integrate BB signals using proper weighting if available
         integrated_bb = {}
-        if bb_signals and 'bb_48' in bb_signals:
+        if bb_signals:
             try:
-                integrated_bb = integrate_bb_signals(bb_analysis.get('bb_analysis', {}), slope_analysis)
+                if getattr(self, 'bb_anchor', None) is None:
+                    self.bb_anchor = self._resolve_bb_anchor()
+                integrated_bb = integrate_bb_signals(
+                    bb_analysis.get('bb_analysis', {}),
+                    slope_analysis,
+                    anchor_target=self.bb_anchor
+                )
             except Exception as e:
                 self.console.print(f"[yellow]⚠️  Error integrating BB signals: {str(e)}[/yellow]")
         
@@ -1942,15 +2186,18 @@ class EnhancedPredictionSystem:
         if slope_texts:
             summary_lines.append(f"📈 BB Trends: {' | '.join(slope_texts)}")
         
-        # Quick action
+        # Quick action with configurable thresholds
         # Use resolved signal for recommendation, not just ML
-        if resolved['position'] == 'LONG' and bb_confidence > 0.8 and confidence > 0.8:
+        thresholds = self._get_confidence_thresholds()
+        high_conf_threshold = thresholds['high_confidence']
+        
+        if resolved['position'] == 'LONG' and bb_confidence > high_conf_threshold and confidence > high_conf_threshold:
             summary_lines.append("")
             summary_lines.append("[bright_green]⚡ RECOMMENDED ACTION: Enter LONG position with strong conviction[/bright_green]")
         elif resolved['position'] == 'LONG':
             summary_lines.append("")
             summary_lines.append("[green]⚡ RECOMMENDED ACTION: Consider LONG position with caution[/green]")
-        elif resolved['position'] == 'SHORT' and bb_confidence > 0.8 and confidence > 0.8:
+        elif resolved['position'] == 'SHORT' and bb_confidence > high_conf_threshold and confidence > high_conf_threshold:
             summary_lines.append("")
             summary_lines.append("[bright_red]⚡ RECOMMENDED ACTION: Enter SHORT position with strong conviction[/bright_red]")
         elif resolved['position'] == 'SHORT':
@@ -2013,6 +2260,33 @@ class EnhancedPredictionSystem:
             pred_config = getattr(self.config, 'prediction', {})
             enable_realtime = pred_config.get('enable_realtime_fetch', True)
             
+            # Print a one-time runtime overview for this run
+            try:
+                rr_min_dbg = None
+                try:
+                    rr_min_dbg = self.config.multi_horizon.get('rr_min') if hasattr(self.config, 'multi_horizon') else None
+                except Exception:
+                    rr_min_dbg = None
+                bb_periods_dbg = getattr(self.config, 'bb_periods', None)
+                bb_devs_dbg = getattr(self.config, 'bb_devs', None)
+                lookback_dbg = {
+                    'days_arg': lookback_days,
+                    'candles_arg': lookback_candles,
+                    'cfg_days': (getattr(self.config, 'prediction', {}) or {}).get('lookback_days', None) if isinstance(getattr(self.config, 'prediction', {}), dict) else None,
+                    'cfg_candles': (getattr(self.config, 'prediction', {}) or {}).get('lookback_candles', None) if isinstance(getattr(self.config, 'prediction', {}), dict) else None,
+                }
+                self.console.print(Panel(
+                    f"Data Source: {'API (realtime)' if enable_realtime else 'Database'}\n"
+                    f"Lookback: {lookback_dbg}\n"
+                    f"RR Min: {rr_min_dbg}\n"
+                    f"BB Config: periods={bb_periods_dbg} devs={bb_devs_dbg}\n"
+                    f"BB Anchor: {getattr(self, 'bb_anchor', None) or self._resolve_bb_anchor()}",
+                    title="Runtime Overview",
+                    border_style="cyan"
+                ))
+            except Exception:
+                pass
+
             if enable_realtime:
                 # Fetch fresh data and compute features real-time
                 self.console.print("[yellow]🔄 Fetching latest data and computing features real-time...[/yellow]")
@@ -2094,8 +2368,11 @@ class EnhancedPredictionSystem:
             
             # Prepare resolved signal and RR gating for simulator and UI coherence
             try:
+                if getattr(self, 'bb_anchor', None) is None:
+                    self.bb_anchor = self._resolve_bb_anchor()
                 bb_sig_payload = integrate_bb_signals(bb_analysis.get('bb_analysis', {}) or {},
-                                                      slope_analysis=bb_analysis.get('slope_analysis'))
+                                                      slope_analysis=bb_analysis.get('slope_analysis'),
+                                                      anchor_target=self.bb_anchor)
             except Exception:
                 bb_sig_payload = {'integrated_signal': 'NEUTRAL', 'confidence': 0.5}
             resolved = resolve_signal_conflict(
@@ -2126,8 +2403,11 @@ class EnhancedPredictionSystem:
             
             # Prepare resolved signal and RR gate values for simulator/UI coherence
             try:
+                if getattr(self, 'bb_anchor', None) is None:
+                    self.bb_anchor = self._resolve_bb_anchor()
                 bb_sig_payload = integrate_bb_signals(bb_analysis.get('bb_analysis', {}) or {},
-                                                      slope_analysis=bb_analysis.get('slope_analysis'))
+                                                      slope_analysis=bb_analysis.get('slope_analysis'),
+                                                      anchor_target=self.bb_anchor)
             except Exception:
                 bb_sig_payload = {'integrated_signal': 'NEUTRAL', 'confidence': 0.5}
             resolved = resolve_signal_conflict(
@@ -2158,24 +2438,27 @@ class EnhancedPredictionSystem:
             tables = self.create_enhanced_display(latest_data, prediction, prediction_proba, confidence, bb_analysis)
             trading_rec = self.create_trading_recommendations(prediction, confidence, bb_analysis)
             
+            # Prepare common data for all output modes
+            import datetime as _dt
+            import json
+            ts = _dt.datetime.now(_dt.timezone.utc).isoformat()
+            bb_signals = {k: v.get('signal') for k, v in bb_analysis.get('bb_analysis', {}).items()}
+            
+            # Compute directional RR for gating summary (common for all modes)
+            rr_long_json = None; rr_short_json = None; rr_gate_flag = False
+            if multi_result and multi_result.get('upside_pct') is not None and multi_result.get('downside_pct') is not None:
+                up_pct_j = multi_result.get('upside_pct') or 0
+                dn_pct_j = abs(multi_result.get('downside_pct') or 0)
+                if up_pct_j>0 and dn_pct_j>0:
+                    rr_long_json = up_pct_j / dn_pct_j
+                    rr_short_json = dn_pct_j / up_pct_j
+                    rr_min_val = self.config.multi_horizon.get('rr_min',1.2) if hasattr(self.config,'multi_horizon') else 1.2
+                    if prediction in (0,2):
+                        rr_for_decision = rr_long_json if prediction==2 else rr_short_json
+                        rr_gate_flag = (rr_for_decision is not None and rr_for_decision < rr_min_val)
+            
             # JSON output mode (no rich tables)
             if output_mode == 'json':
-                import datetime as _dt
-                import json
-                ts = _dt.datetime.now(_dt.timezone.utc).isoformat()
-                bb_signals = {k: v.get('signal') for k, v in bb_analysis.get('bb_analysis', {}).items()}
-                # Compute directional RR for gating summary
-                rr_long_json = None; rr_short_json = None; rr_gate_flag = False
-                if multi_result and multi_result.get('upside_pct') is not None and multi_result.get('downside_pct') is not None:
-                    up_pct_j = multi_result.get('upside_pct') or 0
-                    dn_pct_j = abs(multi_result.get('downside_pct') or 0)
-                    if up_pct_j>0 and dn_pct_j>0:
-                        rr_long_json = up_pct_j / dn_pct_j
-                        rr_short_json = dn_pct_j / up_pct_j
-                        rr_min_val = self.config.multi_horizon.get('rr_min',1.2) if hasattr(self.config,'multi_horizon') else 1.2
-                        if prediction in (0,2):
-                            rr_for_decision = rr_long_json if prediction==2 else rr_short_json
-                            rr_gate_flag = (rr_for_decision is not None and rr_for_decision < rr_min_val)
                 out_obj = {
                     'timestamp': ts,
                     'timeframe': self.timeframe,
@@ -2200,6 +2483,44 @@ class EnhancedPredictionSystem:
                 }
                 print(json.dumps(out_obj, ensure_ascii=False))
                 return True
+            
+            # Professional trading signal output mode
+            if output_mode == 'professional':
+                # Prepare professional signal data
+                professional_data = {
+                    'timestamp': ts,
+                    'timeframe': self.timeframe,
+                    'model_type': self.model_type,
+                    'prediction': prediction,
+                    'prediction_original': original_prediction,
+                    'confidence': confidence,
+                    'overridden': overridden,
+                    'confidence_threshold': confidence_threshold,
+                    'prediction_proba': prediction_proba.tolist(),
+                    'bb_signals': bb_signals,
+                    'missing_feature_count': pred_meta.get('missing_feature_count'),
+                    'total_expected_features': pred_meta.get('total_expected_features'),
+                    'missing_features': pred_meta.get('missing_features'),
+                    'price': bb_analysis.get('live_price'),
+                    'price_db': bb_analysis.get('database_price'),
+                    'price_diff_pct': bb_analysis.get('price_difference_pct'),
+                    'multi_model': multi_result if multi_result else None,
+                    'rr_long': rr_long_json,
+                    'rr_short': rr_short_json,
+                    'rr_gate_triggered': bool(rr_gate_flag)
+                }
+                
+                # Generate professional signal
+                try:
+                    formatter = ProfessionalSignalFormatter()
+                    professional_signal = formatter.format_signal(professional_data)
+                    print(professional_signal)
+                    return True
+                except Exception as e:
+                    print(f"❌ Error generating professional signal: {str(e)}")
+                    print(f"Falling back to JSON output:")
+                    print(json.dumps(professional_data, ensure_ascii=False))
+                    return True
 
             self.console.clear()
             header_title = "🚀 ENHANCED Live Trading Analysis with Bollinger Bands"
@@ -2296,9 +2617,18 @@ class EnhancedPredictionSystem:
                 if self._paper_engine is None:
                     self._paper_engine = self._PaperTradeEngine(self.paper_trade_log, getattr(self, 'paper_timeout_mins', 120))
                 # Compute candidate TP/SL for both directions
-                bb_48_levels = (bb_analysis.get('bb_levels') or {}).get('bb_48', {})
-                tp_l, sl_l, rr_l = self._compute_tp_sl(live_price, bb_48_levels, up_pct, dn_pct, 'LONG')
-                tp_s, sl_s, rr_s = self._compute_tp_sl(live_price, bb_48_levels, up_pct, dn_pct, 'SHORT')
+                bb_levels_all = (bb_analysis.get('bb_levels') or {})
+                # Use first available BB period as primary
+                primary_bb_levels = {}
+                if bb_levels_all:
+                    try:
+                        sorted_keys = sorted(bb_levels_all.keys(), key=lambda k: int(str(k).split('_')[1]))
+                        primary_bb_key = sorted_keys[0] if sorted_keys else None
+                        primary_bb_levels = bb_levels_all.get(primary_bb_key, {}) if primary_bb_key else {}
+                    except Exception:
+                        primary_bb_levels = list(bb_levels_all.values())[0] if bb_levels_all else {}
+                tp_l, sl_l, rr_l = self._compute_tp_sl(live_price, primary_bb_levels, up_pct, dn_pct, 'LONG')
+                tp_s, sl_s, rr_s = self._compute_tp_sl(live_price, primary_bb_levels, up_pct, dn_pct, 'SHORT')
                 import datetime as _dt
                 now_iso = _dt.datetime.utcnow().isoformat() + 'Z'
                 open_trade = self._paper_engine.load_open_trade()
@@ -2384,10 +2714,18 @@ class EnhancedPredictionSystem:
             if getattr(self, 'paper_trade_log', None):
                 if self._paper_engine is None:
                     self._paper_engine = self._PaperTradeEngine(self.paper_trade_log, getattr(self, 'paper_timeout_mins', 120))
-                # Compute candidate TP/SL for both directions
-                bb_48_levels = (bb_analysis.get('bb_levels') or {}).get('bb_48', {})
-                tp_l, sl_l, rr_l = self._compute_tp_sl(live_price, bb_48_levels, up_pct, dn_pct, 'LONG')
-                tp_s, sl_s, rr_s = self._compute_tp_sl(live_price, bb_48_levels, up_pct, dn_pct, 'SHORT')
+                # Compute candidate TP/SL for both directions (use same logic as above)
+                bb_levels_all = (bb_analysis.get('bb_levels') or {})
+                primary_bb_levels = {}
+                if bb_levels_all:
+                    try:
+                        sorted_keys = sorted(bb_levels_all.keys(), key=lambda k: int(str(k).split('_')[1]))
+                        primary_bb_key = sorted_keys[0] if sorted_keys else None
+                        primary_bb_levels = bb_levels_all.get(primary_bb_key, {}) if primary_bb_key else {}
+                    except Exception:
+                        primary_bb_levels = list(bb_levels_all.values())[0] if bb_levels_all else {}
+                tp_l, sl_l, rr_l = self._compute_tp_sl(live_price, primary_bb_levels, up_pct, dn_pct, 'LONG')
+                tp_s, sl_s, rr_s = self._compute_tp_sl(live_price, primary_bb_levels, up_pct, dn_pct, 'SHORT')
                 import datetime as _dt
                 now_iso = _dt.datetime.utcnow().replace(tzinfo=None).isoformat() + 'Z'
                 open_trade = self._paper_engine.load_open_trade()
@@ -2485,8 +2823,8 @@ def main():
                        help='Number of recent rows to load for context/slope analysis')
     parser.add_argument('--confidence-threshold', type=float, default=None,
                        help='If set, predictions below this confidence are forced to HOLD')
-    parser.add_argument('--output', choices=['rich', 'json'], default='rich',
-                       help='Output mode: rich tables or machine-readable JSON (single mode prints one JSON object)')
+    parser.add_argument('--output', choices=['rich', 'json', 'professional'], default='rich',
+                       help='Output mode: rich tables, machine-readable JSON, or professional trading signals')
     parser.add_argument('--rr-min', type=float, default=None,
                        help='Override reward:risk minimum threshold used for gating (overrides config.multi_horizon.rr_min)')
     parser.add_argument('--market', choices=['spot','future','futures-usdm','usdm'], default=None,
@@ -2506,6 +2844,8 @@ def main():
                        help='Run continuous predictions (opposite of --single)')
     parser.add_argument('--config', type=str, default=None,
                        help='Path to config file')
+    parser.add_argument('--bb-anchor', type=int, default=None,
+                       help='Override Bollinger slope anchor period (e.g., 48). If not set, will use median of config.bb_periods or fallback to 48')
     
     # Real-time data fetching arguments
     parser.add_argument('--realtime-fetch', action='store_true',
@@ -2527,17 +2867,33 @@ def main():
     )
     
     # Apply CLI overrides to system config
-    if hasattr(system.config, 'prediction'):
+    # Handle prediction config (config is a dict-like object)
+    if hasattr(system.config, 'prediction') and system.config.prediction:
         if args.realtime_fetch:
-            system.config.prediction.enable_realtime_fetch = True
+            system.config.prediction['enable_realtime_fetch'] = True
         elif args.no_realtime_fetch:
-            system.config.prediction.enable_realtime_fetch = False
+            system.config.prediction['enable_realtime_fetch'] = False
             
         if args.lookback_days is not None:
-            system.config.prediction.lookback_days = args.lookback_days
+            system.config.prediction['lookback_days'] = args.lookback_days
         
         if args.lookback_candles is not None:
-            system.config.prediction.lookback_candles = args.lookback_candles
+            system.config.prediction['lookback_candles'] = args.lookback_candles
+    elif args.lookback_days is not None or args.lookback_candles is not None:
+        # Initialize prediction config if it doesn't exist
+        if not hasattr(system.config, 'prediction'):
+            system.config.prediction = {}
+        if args.lookback_days is not None:
+            system.config.prediction['lookback_days'] = args.lookback_days
+        if args.lookback_candles is not None:
+            system.config.prediction['lookback_candles'] = args.lookback_candles
+
+    # Override BB anchor via CLI
+    try:
+        if args.bb_anchor is not None:
+            setattr(system, 'bb_anchor', int(args.bb_anchor))
+    except Exception:
+        pass
 
     # Override market type via CLI
     if args.market is not None:

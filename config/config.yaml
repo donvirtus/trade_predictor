@@ -26,7 +26,7 @@ timeframes:
   - 4h
   - 6h  
 
-months: 18  # jumlah bulan historis yang diambil
+months: 26  # jumlah bulan historis yang diambil
 
 # Rebuild & retention flags
 # Default without flags: treat as force_full_rebuild = true, retain_full_history = false
@@ -86,7 +86,7 @@ target:
   threshold_mode: "auto_balanced"  # "manual" | "auto_balanced" | "adaptive"
   
   # Manual fixed threshold (used when threshold_mode = "manual")
-  sideways_threshold_pct: 1.0
+  sideways_threshold_pct: 0.15     # ✅ OPTIMIZED: Auto-selected optimal threshold
   
   # Auto-balanced thresholds (used when threshold_mode = "auto_balanced")
   auto_balanced_config: "data/auto_balanced_thresholds.json"
@@ -98,26 +98,26 @@ target:
       SIDEWAYS: 34.0  # Target 34% SIDEWAYS (slightly higher for stability)
       DOWN: 33.0      # Target 33% DOWN signals
     tolerance: 3.0    # ±3% tolerance for "good enough"
-    fallback_threshold: 0.545  # Use this if auto-balance fails
+    fallback_threshold: 0.15  # ✅ OPTIMIZED: Use auto-selected optimal threshold
   
   # ✅ NEW: Adaptive thresholds untuk multi-timeframe consistency
   adaptive_thresholds:
-    enabled: true
-    method: "hybrid"            # "manual" | "auto_volatility" | "hybrid"
+    enabled: true                   # ✅ ENABLED - Using optimal thresholds
+    method: "manual"            # "manual" | "auto_volatility" | "hybrid"
     auto_update: true           # Update multipliers berdasarkan data terbaru
     update_frequency_days: 7    # Update setiap 7 hari
     lookback_days: 30          # Data history untuk calculate volatility
     base_timeframe: "1h"       # Reference timeframe (1.0x multiplier)
     
-    # Manual multipliers (back to 1.0% baseline with empirical adjustments)
+    # Manual multipliers (based on actual movement analysis)
     manual_multipliers:
-      "5m": 0.3              # 0.3% untuk 5m (noise reduction)
-      "15m": 0.6             # 0.6% untuk 15m  
-      "30m": 0.8             # 0.8% untuk 30m
-      "1h": 1.0              # 1.0% untuk 1h (baseline restored)
-      "2h": 1.4              # 1.4% untuk 2h
-      "4h": 2.0              # 2.0% untuk 4h (higher signal threshold)
-      "6h": 2.5              # 2.5% untuk 6h
+      "5m": 0.15             # 0.15% untuk 5m (very conservative for noise)
+      "15m": 0.30            # 0.30% untuk 15m (around 80th percentile)
+      "30m": 0.40            # 0.40% untuk 30m
+      "1h": 0.50             # 0.50% untuk 1h (around 90th percentile)
+      "2h": 0.65             # 0.65% untuk 2h
+      "4h": 0.80             # 0.80% untuk 4h
+      "6h": 1.00             # 1.00% untuk 6h (around 90th percentile 5h)
     
     # Auto-calculation parameters
     volatility_calc:
@@ -180,7 +180,7 @@ prediction:
   enable_realtime_fetch: true
   
   # Data lookback window for feature calculation
-  lookback_days: 14        # days of historical data to fetch (alternative to lookback_candles)
+  lookback_days: 5        # days of historical data to fetch (alternative to lookback_candles)
   lookback_candles: null   # specific number of candles (overrides lookback_days if set)
   
   # Binance API settings for prediction

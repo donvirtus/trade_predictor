@@ -19,7 +19,7 @@ import json
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, ROOT)
 
-from utils.logging import get_logger
+from utils.logger_config import get_logger
 from utils.config import load_config
 
 logger = get_logger('threshold_validation')

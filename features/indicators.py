@@ -1,34 +1,110 @@
+import numpy as np
 import pandas as pd
-import ta
+
+
+def _safe_divide(a: pd.Series, b: pd.Series) -> pd.Series:
+    return a.divide(b.replace(0, np.nan)).replace([np.inf, -np.inf], np.nan)
+
+
+def _ewma(series: pd.Series, span: int) -> pd.Series:
+    return series.ewm(span=span, adjust=False, min_periods=span).mean()
+
+
+def _compute_rsi(close: pd.Series, period: int) -> pd.Series:
+    delta = close.diff()
+    gain = delta.clip(lower=0)
+    loss = -delta.clip(upper=0)
+    avg_gain = gain.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
+    avg_loss = loss.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
+    rs = _safe_divide(avg_gain, avg_loss)
+    return 100 - (100 / (1 + rs))
+
+
+def _compute_adx(high: pd.Series, low: pd.Series, close: pd.Series, period: int) -> pd.Series:
+    plus_dm = (high - high.shift(1)).clip(lower=0)
+    minus_dm = (low.shift(1) - low).clip(lower=0)
+    plus_dm[plus_dm < minus_dm] = 0
+    minus_dm[minus_dm < plus_dm] = 0
+
+    tr_components = pd.concat([
+        high - low,
+        (high - close.shift(1)).abs(),
+        (low - close.shift(1)).abs()
+    ], axis=1)
+    tr = tr_components.max(axis=1)
+    atr = tr.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
+
+    plus_di = 100 * _safe_divide(plus_dm.ewm(alpha=1/period, adjust=False, min_periods=period).mean(), atr)
+    minus_di = 100 * _safe_divide(minus_dm.ewm(alpha=1/period, adjust=False, min_periods=period).mean(), atr)
+    dx = 100 * _safe_divide((plus_di - minus_di).abs(), plus_di + minus_di)
+    return dx.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
 
 
 def add_price_indicators(df: pd.DataFrame, cfg) -> pd.DataFrame:
-    bb_periods = cfg.bb_periods
-    bb_devs = cfg.bb_devs
-    for period in bb_periods:
-        base = ta.volatility.BollingerBands(df['close'], window=period, window_dev=bb_devs[0])
-        df[f'bb_{period}_middle'] = base.bollinger_mavg()
-        for dev in bb_devs:
-            bb = ta.volatility.BollingerBands(df['close'], window=period, window_dev=dev)
-            u = f'bb_{period}_upper_{dev}'
-            l = f'bb_{period}_lower_{dev}'
-            df[u] = bb.bollinger_hband()
-            df[l] = bb.bollinger_lband()
-            df[f'bb_{period}_percent_b_{dev}'] = (df['close'] - df[l]) / (df[u]-df[l])
-            df[f'bb_{period}_bandwidth_{dev}'] = (df[u]-df[l]) / df[f'bb_{period}_middle']
-        widest = max(bb_devs)
-        bw_col = f'bb_{period}_bandwidth_{widest}'
-        df[f'bb_{period}_squeeze_flag'] = df[bw_col] < df[bw_col].rolling(100).quantile(0.2)
-    if cfg.ma_periods:
-        for p in cfg.ma_periods:
-            df[f'ma_{p}'] = ta.trend.SMAIndicator(df['close'], window=p).sma_indicator()
-    df[f'price_range_{cfg.price_range_period}'] = df['high'].rolling(cfg.price_range_period).max() - df['low'].rolling(cfg.price_range_period).min()
-    df[f'volatility_{cfg.volatility_period}'] = df['close'].pct_change().rolling(cfg.volatility_period).std()
-    df[f'rsi_{cfg.rsi_period}'] = ta.momentum.RSIIndicator(df['close'], window=cfg.rsi_period).rsi()
-    macd = ta.trend.MACD(df['close'], window_fast=cfg.macd_params[0], window_slow=cfg.macd_params[1], window_sign=cfg.macd_params[2])
-    df['macd'] = macd.macd(); df['macd_signal'] = macd.macd_signal(); df['macd_histogram'] = macd.macd_diff()
-    adx = ta.trend.ADXIndicator(df['high'], df['low'], df['close'], window=cfg.adx_period)
-    df[f'adx_{cfg.adx_period}'] = adx.adx()
-    df['obv'] = ta.volume.OnBalanceVolumeIndicator(df['close'], df['volume']).on_balance_volume()
-    df['vwap'] = (df['close']*df['volume']).cumsum() / df['volume'].cumsum()
+    close = df['close']
+    high = df['high']
+    low = df['low']
+    volume = df['volume']
+
+    # Bollinger Bands and related metrics (vectorised)
+    for period in cfg.bb_periods:
+        middle = close.rolling(window=period, min_periods=period).mean()
+        std = close.rolling(window=period, min_periods=period).std()
+        middle_col = f'bb_{period}_middle'
+        df[middle_col] = middle
+        for dev in cfg.bb_devs:
+            upper = middle + std * dev
+            lower = middle - std * dev
+            upper_col = f'bb_{period}_upper_{dev}'
+            lower_col = f'bb_{period}_lower_{dev}'
+            df[upper_col] = upper
+            df[lower_col] = lower
+            band_range = upper - lower
+            df[f'bb_{period}_percent_b_{dev}'] = _safe_divide(close - lower, band_range)
+            df[f'bb_{period}_bandwidth_{dev}'] = _safe_divide(band_range, middle)
+        if cfg.bb_devs:
+            widest = max(cfg.bb_devs)
+            bw_col = f'bb_{period}_bandwidth_{widest}'
+            rolling_quantile = df[bw_col].rolling(100, min_periods=20).quantile(0.2)
+            df[f'bb_{period}_squeeze_flag'] = (df[bw_col] < rolling_quantile).astype('bool')
+
+    # Moving averages (SMA & EMA)
+    for p in cfg.ma_periods:
+        sma = close.rolling(window=p, min_periods=p).mean()
+        ema = _ewma(close, span=p)
+        df[f'ma_{p}'] = sma
+        df[f'sma_{p}'] = sma
+        df[f'ema_{p}'] = ema
+
+    # Range & volatility indicators
+    df[f'price_range_{cfg.price_range_period}'] = (
+        high.rolling(cfg.price_range_period, min_periods=1).max()
+        - low.rolling(cfg.price_range_period, min_periods=1).min()
+    )
+    df[f'volatility_{cfg.volatility_period}'] = (
+        close.pct_change(fill_method=None)
+        .rolling(cfg.volatility_period, min_periods=cfg.volatility_period)
+        .std()
+    )
+
+    # Momentum indicators
+    df[f'rsi_{cfg.rsi_period}'] = _compute_rsi(close, cfg.rsi_period)
+
+    fast, slow, signal = cfg.macd_params
+    ema_fast = _ewma(close, span=fast)
+    ema_slow = _ewma(close, span=slow)
+    macd_line = ema_fast - ema_slow
+    macd_signal = _ewma(macd_line, span=signal)
+    df['macd'] = macd_line
+    df['macd_signal'] = macd_signal
+    df['macd_histogram'] = macd_line - macd_signal
+
+    df[f'adx_{cfg.adx_period}'] = _compute_adx(high, low, close, cfg.adx_period)
+
+    # Volume based indicators
+    direction = np.sign(close.diff()).fillna(0)
+    df['obv'] = (direction * volume).cumsum()
+    cumulative_volume = volume.cumsum()
+    df['vwap'] = _safe_divide((close * volume).cumsum(), cumulative_volume)
+
     return df

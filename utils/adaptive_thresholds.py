@@ -19,6 +19,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from utils.path_utils import generate_db_path, resolve_dataset_base_dir, resolve_feature_table
+
 
 class AdaptiveThresholdCalculator:
     """
@@ -26,9 +28,18 @@ class AdaptiveThresholdCalculator:
     volatility patterns dari historical market data.
     """
     
-    def __init__(self, pair: str = "BTCUSDT", db_base_path: str = "data/db", cache_file: Optional[str] = None):
+    def __init__(
+        self,
+        pair: str = "BTCUSDT",
+        config=None,
+        db_base_path: Optional[str] = None,
+        cache_file: Optional[str] = None,
+        feature_table: Optional[str] = None,
+    ):
         self.pair = pair
-        self.db_base_path = db_base_path
+        self.config = config
+        self.db_base_path = resolve_dataset_base_dir(config, override=db_base_path)
+        self.feature_table = feature_table or resolve_feature_table(config)
         # Generate pair-specific cache file if not provided
         if cache_file is None:
             pair_clean = pair.replace('USDT', '').lower()
@@ -49,13 +60,11 @@ class AdaptiveThresholdCalculator:
             DataFrame dengan OHLCV data atau None jika gagal
         """
         try:
-            # Generate database path (same logic as build_dataset.py)
-            pair_clean = pair.replace('USDT', '').lower()
-            db_path = os.path.join(self.db_base_path, f"{pair_clean}_{timeframe}.sqlite")
+            # Generate database path using shared helper
+            db_path = generate_db_path(pair, timeframe, base_dir=self.db_base_path)
             
             if not os.path.exists(db_path):
                 logger.debug(f"Database tidak ditemukan: {db_path}")
-                print(f"Database tidak ditemukan: {db_path}")
                 return None
             
             # Calculate cutoff date
@@ -63,9 +72,9 @@ class AdaptiveThresholdCalculator:
             cutoff_str = cutoff_date.strftime('%Y-%m-%d')
             
             conn = sqlite3.connect(db_path)
-            query = """
+            query = f"""
                 SELECT timestamp, open, high, low, close, volume 
-                FROM features 
+                FROM {self.feature_table}
                 WHERE timestamp >= ? 
                 ORDER BY timestamp ASC
             """
@@ -213,14 +222,6 @@ class AdaptiveThresholdCalculator:
             
             if not volatilities:
                 logger.error("Tidak ada volatility data yang berhasil dihitung")
-                print("Gagal memuat data untuk 5m")
-                print("Gagal memuat data untuk 6h") 
-                print("Gagal memuat data untuk 30m")
-                print("Gagal memuat data untuk 4h")
-                print("Gagal memuat data untuk 15m")
-                print("Gagal memuat data untuk 2h")
-                print("Gagal memuat data untuk 1h")
-                print("Tidak ada volatility data yang berhasil dihitung")
                 return {}
             
             # Pastikan base_timeframe ada
@@ -410,8 +411,8 @@ def get_adaptive_multipliers(config, pair: str, timeframes: List[str], force_rec
         lookback_days = adaptive_cfg.get('lookback_days', 30)
         base_timeframe = adaptive_cfg.get('base_timeframe', '1h')
         auto_update = adaptive_cfg.get('auto_update', True)
-        
-        calc = AdaptiveThresholdCalculator(pair=pair)
+
+        calc = AdaptiveThresholdCalculator(pair=pair, config=config)
         
         # Try cache jika auto_update enabled
         cached_multipliers = None
@@ -443,7 +444,6 @@ def get_adaptive_multipliers(config, pair: str, timeframes: List[str], force_rec
             # If auto-calculation failed (no databases exist), fall back to manual
             if not new_multipliers:
                 logger.warning("Auto-calculation gagal (databases tidak tersedia), fallback ke manual multipliers")
-                print("Tidak ada volatility data yang berhasil dihitung")
                 return adaptive_cfg.get('manual_multipliers', {})
             
             # Apply smoothing if we have previous values

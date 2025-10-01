@@ -1,0 +1,940 @@
+2025-10-01 02:41:02,321 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:41:04,578 - INFO - Processing only timeframe: 5m
+2025-10-01 02:41:04,578 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:41:04,579 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:41:04,579 - INFO - Timeframes to process: ['5m']
+2025-10-01 02:41:04,579 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:41:04,579 - INFO - 🚀 Starting BTCUSDT 5m processing pipeline...
+2025-10-01 02:41:04,579 - INFO - 📊 Fetching BTC/USDT 5m: 2025-07-02 to 2025-09-30
+2025-10-01 02:41:04,579 - INFO - ⏱️  Expected ~25 API calls
+2025-10-01 02:41:10,963 - INFO - 🔄 Post-processing 25922 raw candles...
+2025-10-01 02:41:10,963 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:41:12,534 - INFO - ✅ No significant gaps detected in BTC/USDT 5m
+2025-10-01 02:41:12,535 - INFO - 📈 Final dataset: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:41:12,539 - INFO - 📊 Raw data: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:41:14,109 - INFO - ⚙️  Adding technical indicators for 25922 rows...
+2025-10-01 02:41:14,110 - INFO - 🔧 Auto-detected workers: 8/8 CPUs (dataset size: 25922 rows)
+2025-10-01 02:41:14,110 - INFO - 🚀 Using parallel processing: 8 workers, chunk size: 1080
+2025-10-01 02:41:15,247 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:41:15,248 - INFO - 📈 After indicators: 25,922 rows
+2025-10-01 02:41:15,248 - INFO - 🔢 Adding derivative features for 25922 rows...
+2025-10-01 02:41:15,248 - INFO - 🚀 Using parallel processing for derivatives: 8 workers
+2025-10-01 02:41:51,912 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:41:51,912 - INFO - 🧮 After derivatives: 25,922 rows
+2025-10-01 02:41:51,913 - INFO - 🌐 Merging external data...
+2025-10-01 02:41:51,918 - INFO - 🔗 After external merge: 25,922 rows
+2025-10-01 02:41:51,918 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:41:51,918 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:41:51,918 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:41:52,006 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:41:52,006 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:41:52,087 - INFO - 🏷️  After labeling: 25,922 rows (columns now: 379)
+2025-10-01 02:41:52,101 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:41:52,130 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:41:52,696 - INFO - 🧹 Conservative trimming: 25,922 → 25,826 rows (-96)
+2025-10-01 02:41:52,696 - INFO - ⏱️  Processing completed in 48.1s
+2025-10-01 02:41:52,696 - INFO - ✅ BTCUSDT 5m processing completed successfully!
+2025-10-01 02:41:52,706 - INFO - Saving to data/db/btc_5m.sqlite in replace mode
+2025-10-01 02:41:52,743 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 5m
+2025-10-01 02:41:54,868 - INFO - 💾 Saved using replace mode for BTCUSDT 5m
+2025-10-01 02:41:54,875 - INFO - ✅ Saved BTCUSDT 5m: 25,826 rows to data/db/btc_5m.sqlite
+2025-10-01 02:41:54,875 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:41:54,875 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:41:54,895 - INFO -   BTCUSDT 5m: 25,826 rows, 49.2 MB
+2025-10-01 02:41:56,030 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:41:58,127 - INFO - Processing only timeframe: 15m
+2025-10-01 02:41:58,127 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:41:58,127 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:41:58,127 - INFO - Timeframes to process: ['15m']
+2025-10-01 02:41:58,127 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:41:58,127 - INFO - 🚀 Starting BTCUSDT 15m processing pipeline...
+2025-10-01 02:41:58,127 - INFO - 📊 Fetching BTC/USDT 15m: 2025-07-02 to 2025-09-30
+2025-10-01 02:41:58,127 - INFO - ⏱️  Expected ~8 API calls
+2025-10-01 02:42:00,374 - INFO - 🔄 Post-processing 8642 raw candles...
+2025-10-01 02:42:00,374 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:01,977 - INFO - ✅ No significant gaps detected in BTC/USDT 15m
+2025-10-01 02:42:01,978 - INFO - 📈 Final dataset: 8,641 candles from 2025-07-02 19:15:00+00:00 to 2025-09-30 19:15:00+00:00
+2025-10-01 02:42:01,981 - INFO - 📊 Raw data: 8,641 candles from 2025-07-02 19:15:00+00:00 to 2025-09-30 19:15:00+00:00
+2025-10-01 02:42:02,700 - INFO - ⚙️  Adding technical indicators for 8642 rows...
+2025-10-01 02:42:02,700 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 8642 rows)
+2025-10-01 02:42:02,700 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 720
+2025-10-01 02:42:03,133 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:42:03,134 - INFO - 📈 After indicators: 8,642 rows
+2025-10-01 02:42:03,134 - INFO - 🔢 Adding derivative features for 8642 rows...
+2025-10-01 02:42:03,134 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:42:15,821 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:42:15,821 - INFO - 🧮 After derivatives: 8,642 rows
+2025-10-01 02:42:15,821 - INFO - 🌐 Merging external data...
+2025-10-01 02:42:15,823 - INFO - 🔗 After external merge: 8,642 rows
+2025-10-01 02:42:15,824 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:42:15,824 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:42:15,824 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:42:15,852 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:42:15,852 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:42:15,886 - INFO - 🏷️  After labeling: 8,642 rows (columns now: 379)
+2025-10-01 02:42:15,893 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:42:15,908 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:42:16,096 - INFO - 🧹 Conservative trimming: 8,642 → 8,546 rows (-96)
+2025-10-01 02:42:16,096 - INFO - ⏱️  Processing completed in 18.0s
+2025-10-01 02:42:16,096 - INFO - ✅ BTCUSDT 15m processing completed successfully!
+2025-10-01 02:42:16,098 - INFO - Saving to data/db/btc_15m.sqlite in replace mode
+2025-10-01 02:42:16,114 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 15m
+2025-10-01 02:42:16,812 - INFO - 💾 Saved using replace mode for BTCUSDT 15m
+2025-10-01 02:42:16,823 - INFO - ✅ Saved BTCUSDT 15m: 8,546 rows to data/db/btc_15m.sqlite
+2025-10-01 02:42:16,825 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:42:16,825 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:42:16,841 - INFO -   BTCUSDT 15m: 8,546 rows, 16.1 MB
+2025-10-01 02:42:17,993 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:42:20,115 - INFO - Processing only timeframe: 30m
+2025-10-01 02:42:20,115 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:42:20,115 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:42:20,115 - INFO - Timeframes to process: ['30m']
+2025-10-01 02:42:20,115 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:42:20,115 - INFO - 🚀 Starting BTCUSDT 30m processing pipeline...
+2025-10-01 02:42:20,115 - INFO - 📊 Fetching BTC/USDT 30m: 2025-07-02 to 2025-09-30
+2025-10-01 02:42:20,115 - INFO - ⏱️  Expected ~4 API calls
+2025-10-01 02:42:21,233 - INFO - 🔄 Post-processing 4322 raw candles...
+2025-10-01 02:42:21,233 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:22,792 - INFO - ✅ No significant gaps detected in BTC/USDT 30m
+2025-10-01 02:42:22,792 - INFO - 📈 Final dataset: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:42:22,795 - INFO - 📊 Raw data: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:42:23,351 - INFO - ⚙️  Adding technical indicators for 4322 rows...
+2025-10-01 02:42:23,351 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 4322 rows)
+2025-10-01 02:42:23,351 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:42:23,632 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:42:23,632 - INFO - 📈 After indicators: 4,322 rows
+2025-10-01 02:42:23,632 - INFO - 🔢 Adding derivative features for 4322 rows...
+2025-10-01 02:42:23,632 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:42:30,481 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:42:30,481 - INFO - 🧮 After derivatives: 4,322 rows
+2025-10-01 02:42:30,481 - INFO - 🌐 Merging external data...
+2025-10-01 02:42:30,484 - INFO - 🔗 After external merge: 4,322 rows
+2025-10-01 02:42:30,485 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:42:30,485 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:42:30,485 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:42:30,513 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:42:30,513 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:42:30,538 - INFO - 🏷️  After labeling: 4,322 rows (columns now: 379)
+2025-10-01 02:42:30,544 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:42:30,558 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:42:30,676 - INFO - 🧹 Conservative trimming: 4,322 → 4,226 rows (-96)
+2025-10-01 02:42:30,676 - INFO - ⏱️  Processing completed in 10.6s
+2025-10-01 02:42:30,676 - INFO - ✅ BTCUSDT 30m processing completed successfully!
+2025-10-01 02:42:30,678 - INFO - Saving to data/db/btc_30m.sqlite in replace mode
+2025-10-01 02:42:30,688 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 30m
+2025-10-01 02:42:31,067 - INFO - 💾 Saved using replace mode for BTCUSDT 30m
+2025-10-01 02:42:31,074 - INFO - ✅ Saved BTCUSDT 30m: 4,226 rows to data/db/btc_30m.sqlite
+2025-10-01 02:42:31,074 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:42:31,074 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:42:31,079 - INFO -   BTCUSDT 30m: 4,226 rows, 7.8 MB
+2025-10-01 02:42:32,307 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:42:34,406 - INFO - Processing only timeframe: 1h
+2025-10-01 02:42:34,406 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:42:34,406 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:42:34,406 - INFO - Timeframes to process: ['1h']
+2025-10-01 02:42:34,407 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:42:34,407 - INFO - 🚀 Starting BTCUSDT 1h processing pipeline...
+2025-10-01 02:42:34,407 - INFO - 📊 Fetching BTC/USDT 1h: 2025-07-02 to 2025-09-30
+2025-10-01 02:42:34,407 - INFO - ⏱️  Expected ~2 API calls
+2025-10-01 02:42:35,021 - INFO - 🔄 Post-processing 2162 raw candles...
+2025-10-01 02:42:35,023 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:36,586 - INFO - ✅ No significant gaps detected in BTC/USDT 1h
+2025-10-01 02:42:36,586 - INFO - 📈 Final dataset: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:42:36,589 - INFO - 📊 Raw data: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:42:37,056 - INFO - ⚙️  Adding technical indicators for 2162 rows...
+2025-10-01 02:42:37,056 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 2162 rows)
+2025-10-01 02:42:37,056 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:42:37,187 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:42:37,188 - INFO - 📈 After indicators: 2,162 rows
+2025-10-01 02:42:37,188 - INFO - 🔢 Adding derivative features for 2162 rows...
+2025-10-01 02:42:37,188 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:42:40,360 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:42:40,360 - INFO - 🧮 After derivatives: 2,162 rows
+2025-10-01 02:42:40,361 - INFO - 🌐 Merging external data...
+2025-10-01 02:42:40,362 - INFO - 🔗 After external merge: 2,162 rows
+2025-10-01 02:42:40,362 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:42:40,362 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:42:40,362 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:42:40,375 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:42:40,375 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:42:40,391 - INFO - 🏷️  After labeling: 2,162 rows (columns now: 379)
+2025-10-01 02:42:40,394 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:42:40,400 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:42:40,459 - INFO - 🧹 Conservative trimming: 2,162 → 2,066 rows (-96)
+2025-10-01 02:42:40,459 - INFO - ⏱️  Processing completed in 6.1s
+2025-10-01 02:42:40,459 - INFO - ✅ BTCUSDT 1h processing completed successfully!
+2025-10-01 02:42:40,461 - INFO - Saving to data/db/btc_1h.sqlite in replace mode
+2025-10-01 02:42:40,470 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 1h
+2025-10-01 02:42:40,661 - INFO - 💾 Saved using replace mode for BTCUSDT 1h
+2025-10-01 02:42:40,667 - INFO - ✅ Saved BTCUSDT 1h: 2,066 rows to data/db/btc_1h.sqlite
+2025-10-01 02:42:40,668 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:42:40,668 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:42:40,671 - INFO -   BTCUSDT 1h: 2,066 rows, 3.8 MB
+2025-10-01 02:42:41,682 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:42:43,792 - INFO - Processing only timeframe: 2h
+2025-10-01 02:42:43,792 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:42:43,792 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:42:43,792 - INFO - Timeframes to process: ['2h']
+2025-10-01 02:42:43,792 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:42:43,792 - INFO - 🚀 Starting BTCUSDT 2h processing pipeline...
+2025-10-01 02:42:43,792 - INFO - 📊 Fetching BTC/USDT 2h: 2025-07-02 to 2025-09-30
+2025-10-01 02:42:43,792 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:42:44,286 - INFO - 🔄 Post-processing 1081 raw candles...
+2025-10-01 02:42:44,286 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:46,220 - INFO - ✅ No significant gaps detected in BTC/USDT 2h
+2025-10-01 02:42:46,221 - INFO - 📈 Final dataset: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:42:46,224 - INFO - 📊 Raw data: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:42:46,640 - INFO - ⚙️  Adding technical indicators for 1081 rows...
+2025-10-01 02:42:46,640 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1081 rows)
+2025-10-01 02:42:46,640 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:42:46,724 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:42:46,724 - INFO - 📈 After indicators: 1,081 rows
+2025-10-01 02:42:46,724 - INFO - 🔢 Adding derivative features for 1081 rows...
+2025-10-01 02:42:46,724 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:42:47,956 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:42:47,956 - INFO - 🧮 After derivatives: 1,081 rows
+2025-10-01 02:42:47,956 - INFO - 🌐 Merging external data...
+2025-10-01 02:42:47,957 - INFO - 🔗 After external merge: 1,081 rows
+2025-10-01 02:42:47,957 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:42:47,957 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:42:47,957 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:42:47,975 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:42:47,976 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:42:47,998 - INFO - 🏷️  After labeling: 1,081 rows (columns now: 379)
+2025-10-01 02:42:48,002 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:42:48,007 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:42:48,036 - INFO - 🧹 Conservative trimming: 1,081 → 985 rows (-96)
+2025-10-01 02:42:48,037 - INFO - ⏱️  Processing completed in 4.2s
+2025-10-01 02:42:48,037 - INFO - ✅ BTCUSDT 2h processing completed successfully!
+2025-10-01 02:42:48,037 - INFO - Saving to data/db/btc_2h.sqlite in replace mode
+2025-10-01 02:42:48,041 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 2h
+2025-10-01 02:42:48,130 - INFO - 💾 Saved using replace mode for BTCUSDT 2h
+2025-10-01 02:42:48,138 - INFO - ✅ Saved BTCUSDT 2h: 985 rows to data/db/btc_2h.sqlite
+2025-10-01 02:42:48,138 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:42:48,138 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:42:48,141 - INFO -   BTCUSDT 2h: 985 rows, 1.8 MB
+2025-10-01 02:42:49,024 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:42:51,052 - INFO - Processing only timeframe: 4h
+2025-10-01 02:42:51,052 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:42:51,052 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:42:51,052 - INFO - Timeframes to process: ['4h']
+2025-10-01 02:42:51,052 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:42:51,052 - INFO - 🚀 Starting BTCUSDT 4h processing pipeline...
+2025-10-01 02:42:51,052 - INFO - 📊 Fetching BTC/USDT 4h: 2025-07-02 to 2025-09-30
+2025-10-01 02:42:51,052 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:42:51,175 - INFO - 🔄 Post-processing 541 raw candles...
+2025-10-01 02:42:51,176 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:52,754 - INFO - ✅ No significant gaps detected in BTC/USDT 4h
+2025-10-01 02:42:52,755 - INFO - 📈 Final dataset: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:42:52,758 - INFO - 📊 Raw data: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:42:53,180 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:42:53,180 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:42:53,198 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:42:53,198 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:42:53,198 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:42:54,170 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:42:54,170 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:42:54,170 - INFO - 🌐 Merging external data...
+2025-10-01 02:42:54,171 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:42:54,171 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:42:54,171 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:42:54,172 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:42:54,178 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:42:54,178 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:42:54,187 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:42:54,189 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:42:54,193 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:42:54,212 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:42:54,212 - INFO - ⏱️  Processing completed in 3.2s
+2025-10-01 02:42:54,212 - INFO - ✅ BTCUSDT 4h processing completed successfully!
+2025-10-01 02:42:54,212 - INFO - Saving to data/db/btc_4h.sqlite in replace mode
+2025-10-01 02:42:54,217 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 4h
+2025-10-01 02:42:54,220 - INFO - ✂️  Trimmed 383 old rows beyond 90d window for BTCUSDT 4h
+2025-10-01 02:42:54,297 - INFO - 💾 Saved using replace mode for BTCUSDT 4h
+2025-10-01 02:42:54,306 - INFO - ✅ Saved BTCUSDT 4h: 521 rows to data/db/btc_4h.sqlite
+2025-10-01 02:42:54,306 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:42:54,306 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:42:54,307 - INFO -   BTCUSDT 4h: 521 rows, 1.1 MB
+2025-10-01 02:42:55,210 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:42:57,187 - INFO - Processing only timeframe: 6h
+2025-10-01 02:42:57,188 - INFO - Pairs override: ['BTCUSDT'] → ['BTCUSDT']
+2025-10-01 02:42:57,188 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:42:57,188 - INFO - Timeframes to process: ['6h']
+2025-10-01 02:42:57,188 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:42:57,188 - INFO - 🚀 Starting BTCUSDT 6h processing pipeline...
+2025-10-01 02:42:57,188 - INFO - 📊 Fetching BTC/USDT 6h: 2025-07-02 to 2025-09-30
+2025-10-01 02:42:57,188 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:42:57,512 - INFO - 🔄 Post-processing 361 raw candles...
+2025-10-01 02:42:57,512 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:42:59,142 - INFO - ✅ No significant gaps detected in BTC/USDT 6h
+2025-10-01 02:42:59,143 - INFO - 📈 Final dataset: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:42:59,144 - INFO - 📊 Raw data: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:42:59,616 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:42:59,617 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:42:59,648 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:42:59,648 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:42:59,648 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:43:00,889 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:43:00,889 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:43:00,889 - INFO - 🌐 Merging external data...
+2025-10-01 02:43:00,890 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:43:00,890 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:43:00,890 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:43:00,890 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:43:00,898 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:43:00,899 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:43:00,909 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:43:00,911 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:43:00,916 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:43:00,936 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:43:00,936 - INFO - ⏱️  Processing completed in 3.7s
+2025-10-01 02:43:00,937 - INFO - ✅ BTCUSDT 6h processing completed successfully!
+2025-10-01 02:43:00,937 - INFO - Saving to data/db/btc_6h.sqlite in replace mode
+2025-10-01 02:43:00,941 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 6h
+2025-10-01 02:43:00,943 - INFO - ✂️  Trimmed 563 old rows beyond 90d window for BTCUSDT 6h
+2025-10-01 02:43:00,998 - INFO - 💾 Saved using replace mode for BTCUSDT 6h
+2025-10-01 02:43:01,006 - INFO - ✅ Saved BTCUSDT 6h: 341 rows to data/db/btc_6h.sqlite
+2025-10-01 02:43:01,006 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:43:01,006 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:43:01,008 - INFO -   BTCUSDT 6h: 341 rows, 0.7 MB
+2025-10-01 02:43:02,037 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:43:04,034 - INFO - Processing only timeframe: 5m
+2025-10-01 02:43:04,034 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:43:04,034 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:43:04,034 - INFO - Timeframes to process: ['5m']
+2025-10-01 02:43:04,034 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:43:04,034 - INFO - 🚀 Starting ETHUSDT 5m processing pipeline...
+2025-10-01 02:43:04,034 - INFO - 📊 Fetching ETH/USDT 5m: 2025-07-02 to 2025-09-30
+2025-10-01 02:43:04,034 - INFO - ⏱️  Expected ~25 API calls
+2025-10-01 02:43:11,123 - INFO - 🔄 Post-processing 25922 raw candles...
+2025-10-01 02:43:11,123 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:43:12,934 - INFO - ✅ No significant gaps detected in ETH/USDT 5m
+2025-10-01 02:43:12,935 - INFO - 📈 Final dataset: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:43:12,940 - INFO - 📊 Raw data: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:43:14,382 - INFO - ⚙️  Adding technical indicators for 25922 rows...
+2025-10-01 02:43:14,382 - INFO - 🔧 Auto-detected workers: 8/8 CPUs (dataset size: 25922 rows)
+2025-10-01 02:43:14,382 - INFO - 🚀 Using parallel processing: 8 workers, chunk size: 1080
+2025-10-01 02:43:15,190 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:43:15,190 - INFO - 📈 After indicators: 25,922 rows
+2025-10-01 02:43:15,191 - INFO - 🔢 Adding derivative features for 25922 rows...
+2025-10-01 02:43:15,191 - INFO - 🚀 Using parallel processing for derivatives: 8 workers
+2025-10-01 02:43:42,658 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:43:42,659 - INFO - 🧮 After derivatives: 25,922 rows
+2025-10-01 02:43:42,659 - INFO - 🌐 Merging external data...
+2025-10-01 02:43:42,664 - INFO - 🔗 After external merge: 25,922 rows
+2025-10-01 02:43:42,664 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:43:42,664 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:43:42,664 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:43:42,728 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:43:42,728 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:43:42,801 - INFO - 🏷️  After labeling: 25,922 rows (columns now: 379)
+2025-10-01 02:43:42,814 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:43:42,842 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:43:43,354 - INFO - 🧹 Conservative trimming: 25,922 → 25,826 rows (-96)
+2025-10-01 02:43:43,354 - INFO - ⏱️  Processing completed in 39.3s
+2025-10-01 02:43:43,354 - INFO - ✅ ETHUSDT 5m processing completed successfully!
+2025-10-01 02:43:43,357 - INFO - Saving to data/db/eth_5m.sqlite in replace mode
+2025-10-01 02:43:43,393 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 5m
+2025-10-01 02:43:45,154 - INFO - 💾 Saved using replace mode for ETHUSDT 5m
+2025-10-01 02:43:45,161 - INFO - ✅ Saved ETHUSDT 5m: 25,826 rows to data/db/eth_5m.sqlite
+2025-10-01 02:43:45,161 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:43:45,161 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:43:45,177 - INFO -   ETHUSDT 5m: 25,826 rows, 49.2 MB
+2025-10-01 02:43:46,075 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:43:48,118 - INFO - Processing only timeframe: 15m
+2025-10-01 02:43:48,118 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:43:48,119 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:43:48,119 - INFO - Timeframes to process: ['15m']
+2025-10-01 02:43:48,119 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:43:48,119 - INFO - 🚀 Starting ETHUSDT 15m processing pipeline...
+2025-10-01 02:43:48,119 - INFO - 📊 Fetching ETH/USDT 15m: 2025-07-02 to 2025-09-30
+2025-10-01 02:43:48,119 - INFO - ⏱️  Expected ~8 API calls
+2025-10-01 02:43:50,247 - INFO - 🔄 Post-processing 8642 raw candles...
+2025-10-01 02:43:50,247 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:43:51,793 - INFO - ✅ No significant gaps detected in ETH/USDT 15m
+2025-10-01 02:43:51,793 - INFO - 📈 Final dataset: 8,641 candles from 2025-07-02 19:15:00+00:00 to 2025-09-30 19:15:00+00:00
+2025-10-01 02:43:51,795 - INFO - 📊 Raw data: 8,641 candles from 2025-07-02 19:15:00+00:00 to 2025-09-30 19:15:00+00:00
+2025-10-01 02:43:52,488 - INFO - ⚙️  Adding technical indicators for 8642 rows...
+2025-10-01 02:43:52,489 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 8642 rows)
+2025-10-01 02:43:52,489 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 720
+2025-10-01 02:43:52,831 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:43:52,831 - INFO - 📈 After indicators: 8,642 rows
+2025-10-01 02:43:52,831 - INFO - 🔢 Adding derivative features for 8642 rows...
+2025-10-01 02:43:52,831 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:44:01,833 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:44:01,833 - INFO - 🧮 After derivatives: 8,642 rows
+2025-10-01 02:44:01,833 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:01,835 - INFO - 🔗 After external merge: 8,642 rows
+2025-10-01 02:44:01,835 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:01,835 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:01,835 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:01,862 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:01,863 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:01,893 - INFO - 🏷️  After labeling: 8,642 rows (columns now: 379)
+2025-10-01 02:44:01,899 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:01,910 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:02,068 - INFO - 🧹 Conservative trimming: 8,642 → 8,546 rows (-96)
+2025-10-01 02:44:02,068 - INFO - ⏱️  Processing completed in 13.9s
+2025-10-01 02:44:02,068 - INFO - ✅ ETHUSDT 15m processing completed successfully!
+2025-10-01 02:44:02,069 - INFO - Saving to data/db/eth_15m.sqlite in replace mode
+2025-10-01 02:44:02,080 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 15m
+2025-10-01 02:44:02,722 - INFO - 💾 Saved using replace mode for ETHUSDT 15m
+2025-10-01 02:44:02,729 - INFO - ✅ Saved ETHUSDT 15m: 8,546 rows to data/db/eth_15m.sqlite
+2025-10-01 02:44:02,729 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:02,729 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:02,737 - INFO -   ETHUSDT 15m: 8,546 rows, 16.1 MB
+2025-10-01 02:44:03,618 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:05,784 - INFO - Processing only timeframe: 30m
+2025-10-01 02:44:05,784 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:44:05,784 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:05,784 - INFO - Timeframes to process: ['30m']
+2025-10-01 02:44:05,784 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:44:05,784 - INFO - 🚀 Starting ETHUSDT 30m processing pipeline...
+2025-10-01 02:44:05,784 - INFO - 📊 Fetching ETH/USDT 30m: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:05,784 - INFO - ⏱️  Expected ~4 API calls
+2025-10-01 02:44:06,897 - INFO - 🔄 Post-processing 4322 raw candles...
+2025-10-01 02:44:06,897 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:08,454 - INFO - ✅ No significant gaps detected in ETH/USDT 30m
+2025-10-01 02:44:08,455 - INFO - 📈 Final dataset: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:44:08,457 - INFO - 📊 Raw data: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:44:08,983 - INFO - ⚙️  Adding technical indicators for 4322 rows...
+2025-10-01 02:44:08,983 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 4322 rows)
+2025-10-01 02:44:08,983 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:44:09,196 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:44:09,196 - INFO - 📈 After indicators: 4,322 rows
+2025-10-01 02:44:09,196 - INFO - 🔢 Adding derivative features for 4322 rows...
+2025-10-01 02:44:09,196 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:44:13,840 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:44:13,840 - INFO - 🧮 After derivatives: 4,322 rows
+2025-10-01 02:44:13,840 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:13,842 - INFO - 🔗 After external merge: 4,322 rows
+2025-10-01 02:44:13,842 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:13,842 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:13,842 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:13,858 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:13,858 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:13,874 - INFO - 🏷️  After labeling: 4,322 rows (columns now: 379)
+2025-10-01 02:44:13,878 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:13,884 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:13,971 - INFO - 🧹 Conservative trimming: 4,322 → 4,226 rows (-96)
+2025-10-01 02:44:13,971 - INFO - ⏱️  Processing completed in 8.2s
+2025-10-01 02:44:13,971 - INFO - ✅ ETHUSDT 30m processing completed successfully!
+2025-10-01 02:44:13,973 - INFO - Saving to data/db/eth_30m.sqlite in replace mode
+2025-10-01 02:44:13,980 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 30m
+2025-10-01 02:44:14,304 - INFO - 💾 Saved using replace mode for ETHUSDT 30m
+2025-10-01 02:44:14,311 - INFO - ✅ Saved ETHUSDT 30m: 4,226 rows to data/db/eth_30m.sqlite
+2025-10-01 02:44:14,311 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:14,311 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:14,316 - INFO -   ETHUSDT 30m: 4,226 rows, 7.8 MB
+2025-10-01 02:44:15,113 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:17,249 - INFO - Processing only timeframe: 1h
+2025-10-01 02:44:17,249 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:44:17,250 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:17,250 - INFO - Timeframes to process: ['1h']
+2025-10-01 02:44:17,250 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:44:17,250 - INFO - 🚀 Starting ETHUSDT 1h processing pipeline...
+2025-10-01 02:44:17,250 - INFO - 📊 Fetching ETH/USDT 1h: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:17,250 - INFO - ⏱️  Expected ~2 API calls
+2025-10-01 02:44:17,859 - INFO - 🔄 Post-processing 2162 raw candles...
+2025-10-01 02:44:17,859 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:19,418 - INFO - ✅ No significant gaps detected in ETH/USDT 1h
+2025-10-01 02:44:19,419 - INFO - 📈 Final dataset: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:44:19,421 - INFO - 📊 Raw data: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:44:19,901 - INFO - ⚙️  Adding technical indicators for 2162 rows...
+2025-10-01 02:44:19,901 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 2162 rows)
+2025-10-01 02:44:19,902 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:44:20,005 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:44:20,005 - INFO - 📈 After indicators: 2,162 rows
+2025-10-01 02:44:20,005 - INFO - 🔢 Adding derivative features for 2162 rows...
+2025-10-01 02:44:20,005 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:44:22,406 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:44:22,406 - INFO - 🧮 After derivatives: 2,162 rows
+2025-10-01 02:44:22,406 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:22,407 - INFO - 🔗 After external merge: 2,162 rows
+2025-10-01 02:44:22,407 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:22,407 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:22,407 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:22,419 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:22,419 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:22,432 - INFO - 🏷️  After labeling: 2,162 rows (columns now: 379)
+2025-10-01 02:44:22,435 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:22,440 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:22,481 - INFO - 🧹 Conservative trimming: 2,162 → 2,066 rows (-96)
+2025-10-01 02:44:22,481 - INFO - ⏱️  Processing completed in 5.2s
+2025-10-01 02:44:22,481 - INFO - ✅ ETHUSDT 1h processing completed successfully!
+2025-10-01 02:44:22,482 - INFO - Saving to data/db/eth_1h.sqlite in replace mode
+2025-10-01 02:44:22,487 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 1h
+2025-10-01 02:44:22,645 - INFO - 💾 Saved using replace mode for ETHUSDT 1h
+2025-10-01 02:44:22,652 - INFO - ✅ Saved ETHUSDT 1h: 2,066 rows to data/db/eth_1h.sqlite
+2025-10-01 02:44:22,652 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:22,652 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:22,655 - INFO -   ETHUSDT 1h: 2,066 rows, 3.8 MB
+2025-10-01 02:44:23,500 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:25,456 - INFO - Processing only timeframe: 2h
+2025-10-01 02:44:25,456 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:44:25,456 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:25,456 - INFO - Timeframes to process: ['2h']
+2025-10-01 02:44:25,456 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:44:25,456 - INFO - 🚀 Starting ETHUSDT 2h processing pipeline...
+2025-10-01 02:44:25,456 - INFO - 📊 Fetching ETH/USDT 2h: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:25,456 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:44:25,814 - INFO - 🔄 Post-processing 1081 raw candles...
+2025-10-01 02:44:25,814 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:27,372 - INFO - ✅ No significant gaps detected in ETH/USDT 2h
+2025-10-01 02:44:27,372 - INFO - 📈 Final dataset: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:44:27,374 - INFO - 📊 Raw data: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:44:27,841 - INFO - ⚙️  Adding technical indicators for 1081 rows...
+2025-10-01 02:44:27,841 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1081 rows)
+2025-10-01 02:44:27,841 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:44:27,907 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:44:27,907 - INFO - 📈 After indicators: 1,081 rows
+2025-10-01 02:44:27,907 - INFO - 🔢 Adding derivative features for 1081 rows...
+2025-10-01 02:44:27,907 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:44:29,061 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:44:29,061 - INFO - 🧮 After derivatives: 1,081 rows
+2025-10-01 02:44:29,061 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:29,062 - INFO - 🔗 After external merge: 1,081 rows
+2025-10-01 02:44:29,062 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:29,062 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:29,062 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:29,070 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:29,070 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:29,080 - INFO - 🏷️  After labeling: 1,081 rows (columns now: 379)
+2025-10-01 02:44:29,082 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:29,087 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:29,108 - INFO - 🧹 Conservative trimming: 1,081 → 985 rows (-96)
+2025-10-01 02:44:29,109 - INFO - ⏱️  Processing completed in 3.7s
+2025-10-01 02:44:29,109 - INFO - ✅ ETHUSDT 2h processing completed successfully!
+2025-10-01 02:44:29,110 - INFO - Saving to data/db/eth_2h.sqlite in replace mode
+2025-10-01 02:44:29,115 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 2h
+2025-10-01 02:44:29,215 - INFO - 💾 Saved using replace mode for ETHUSDT 2h
+2025-10-01 02:44:29,221 - INFO - ✅ Saved ETHUSDT 2h: 985 rows to data/db/eth_2h.sqlite
+2025-10-01 02:44:29,221 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:29,221 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:29,223 - INFO -   ETHUSDT 2h: 985 rows, 1.8 MB
+2025-10-01 02:44:30,060 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:31,974 - INFO - Processing only timeframe: 4h
+2025-10-01 02:44:31,974 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:44:31,974 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:31,974 - INFO - Timeframes to process: ['4h']
+2025-10-01 02:44:31,974 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:44:31,974 - INFO - 🚀 Starting ETHUSDT 4h processing pipeline...
+2025-10-01 02:44:31,974 - INFO - 📊 Fetching ETH/USDT 4h: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:31,974 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:44:32,099 - INFO - 🔄 Post-processing 541 raw candles...
+2025-10-01 02:44:32,099 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:33,642 - INFO - ✅ No significant gaps detected in ETH/USDT 4h
+2025-10-01 02:44:33,642 - INFO - 📈 Final dataset: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:44:33,643 - INFO - 📊 Raw data: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:44:34,103 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:44:34,104 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:44:34,129 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:44:34,129 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:44:34,129 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:44:35,381 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:44:35,381 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:44:35,381 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:35,383 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:44:35,383 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:35,383 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:35,383 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:35,390 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:35,390 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:35,402 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:44:35,405 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:35,410 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:35,428 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:44:35,428 - INFO - ⏱️  Processing completed in 3.5s
+2025-10-01 02:44:35,429 - INFO - ✅ ETHUSDT 4h processing completed successfully!
+2025-10-01 02:44:35,429 - INFO - Saving to data/db/eth_4h.sqlite in replace mode
+2025-10-01 02:44:35,433 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 4h
+2025-10-01 02:44:35,435 - INFO - ✂️  Trimmed 383 old rows beyond 90d window for ETHUSDT 4h
+2025-10-01 02:44:35,498 - INFO - 💾 Saved using replace mode for ETHUSDT 4h
+2025-10-01 02:44:35,506 - INFO - ✅ Saved ETHUSDT 4h: 521 rows to data/db/eth_4h.sqlite
+2025-10-01 02:44:35,506 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:35,506 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:35,507 - INFO -   ETHUSDT 4h: 521 rows, 1.1 MB
+2025-10-01 02:44:36,422 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:38,348 - INFO - Processing only timeframe: 6h
+2025-10-01 02:44:38,349 - INFO - Pairs override: ['ETHUSDT'] → ['ETHUSDT']
+2025-10-01 02:44:38,349 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:38,349 - INFO - Timeframes to process: ['6h']
+2025-10-01 02:44:38,349 - INFO - Pairs to process: ['ETHUSDT']
+2025-10-01 02:44:38,349 - INFO - 🚀 Starting ETHUSDT 6h processing pipeline...
+2025-10-01 02:44:38,349 - INFO - 📊 Fetching ETH/USDT 6h: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:38,349 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:44:38,465 - INFO - 🔄 Post-processing 361 raw candles...
+2025-10-01 02:44:38,465 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:40,016 - INFO - ✅ No significant gaps detected in ETH/USDT 6h
+2025-10-01 02:44:40,016 - INFO - 📈 Final dataset: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:44:40,017 - INFO - 📊 Raw data: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:44:40,475 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:44:40,475 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:44:40,493 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:44:40,493 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:44:40,493 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:44:41,306 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:44:41,307 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:44:41,307 - INFO - 🌐 Merging external data...
+2025-10-01 02:44:41,307 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:44:41,308 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:44:41,308 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:44:41,308 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:44:41,314 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:44:41,314 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:44:41,323 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:44:41,325 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:44:41,329 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:44:41,347 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:44:41,348 - INFO - ⏱️  Processing completed in 3.0s
+2025-10-01 02:44:41,348 - INFO - ✅ ETHUSDT 6h processing completed successfully!
+2025-10-01 02:44:41,348 - INFO - Saving to data/db/eth_6h.sqlite in replace mode
+2025-10-01 02:44:41,352 - INFO - 🔥 Force full rebuild - skipping merge with existing data for ETHUSDT 6h
+2025-10-01 02:44:41,354 - INFO - ✂️  Trimmed 563 old rows beyond 90d window for ETHUSDT 6h
+2025-10-01 02:44:41,405 - INFO - 💾 Saved using replace mode for ETHUSDT 6h
+2025-10-01 02:44:41,413 - INFO - ✅ Saved ETHUSDT 6h: 341 rows to data/db/eth_6h.sqlite
+2025-10-01 02:44:41,413 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:44:41,413 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:44:41,415 - INFO -   ETHUSDT 6h: 341 rows, 0.7 MB
+2025-10-01 02:44:42,274 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:44:44,201 - INFO - Processing only timeframe: 5m
+2025-10-01 02:44:44,201 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:44:44,201 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:44:44,201 - INFO - Timeframes to process: ['5m']
+2025-10-01 02:44:44,201 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:44:44,201 - INFO - 🚀 Starting DOGEUSDT 5m processing pipeline...
+2025-10-01 02:44:44,201 - INFO - 📊 Fetching DOGE/USDT 5m: 2025-07-02 to 2025-09-30
+2025-10-01 02:44:44,201 - INFO - ⏱️  Expected ~25 API calls
+2025-10-01 02:44:50,590 - INFO - 🔄 Post-processing 25922 raw candles...
+2025-10-01 02:44:50,590 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:44:52,337 - INFO - ✅ No significant gaps detected in DOGE/USDT 5m
+2025-10-01 02:44:52,337 - INFO - 📈 Final dataset: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:44:52,344 - INFO - 📊 Raw data: 25,921 candles from 2025-07-02 19:35:00+00:00 to 2025-09-30 19:35:00+00:00
+2025-10-01 02:44:53,666 - INFO - ⚙️  Adding technical indicators for 25922 rows...
+2025-10-01 02:44:53,666 - INFO - 🔧 Auto-detected workers: 8/8 CPUs (dataset size: 25922 rows)
+2025-10-01 02:44:53,666 - INFO - 🚀 Using parallel processing: 8 workers, chunk size: 1080
+2025-10-01 02:44:54,432 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:44:54,432 - INFO - 📈 After indicators: 25,922 rows
+2025-10-01 02:44:54,432 - INFO - 🔢 Adding derivative features for 25922 rows...
+2025-10-01 02:44:54,432 - INFO - 🚀 Using parallel processing for derivatives: 8 workers
+2025-10-01 02:45:20,670 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:45:20,670 - INFO - 🧮 After derivatives: 25,922 rows
+2025-10-01 02:45:20,670 - INFO - 🌐 Merging external data...
+2025-10-01 02:45:20,675 - INFO - 🔗 After external merge: 25,922 rows
+2025-10-01 02:45:20,675 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:45:20,675 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:45:20,675 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:45:20,733 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:45:20,733 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:45:20,801 - INFO - 🏷️  After labeling: 25,922 rows (columns now: 379)
+2025-10-01 02:45:20,814 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:45:20,844 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:45:21,356 - INFO - 🧹 Conservative trimming: 25,922 → 25,826 rows (-96)
+2025-10-01 02:45:21,357 - INFO - ⏱️  Processing completed in 37.2s
+2025-10-01 02:45:21,357 - INFO - ✅ DOGEUSDT 5m processing completed successfully!
+2025-10-01 02:45:21,361 - INFO - Saving to data/db/doge_5m.sqlite in replace mode
+2025-10-01 02:45:21,402 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 5m
+2025-10-01 02:45:23,174 - INFO - 💾 Saved using replace mode for DOGEUSDT 5m
+2025-10-01 02:45:23,180 - INFO - ✅ Saved DOGEUSDT 5m: 25,826 rows to data/db/doge_5m.sqlite
+2025-10-01 02:45:23,180 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:45:23,180 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:45:23,198 - INFO -   DOGEUSDT 5m: 25,826 rows, 49.2 MB
+2025-10-01 02:45:24,078 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:45:26,071 - INFO - Processing only timeframe: 15m
+2025-10-01 02:45:26,071 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:45:26,071 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:45:26,071 - INFO - Timeframes to process: ['15m']
+2025-10-01 02:45:26,071 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:45:26,071 - INFO - 🚀 Starting DOGEUSDT 15m processing pipeline...
+2025-10-01 02:45:26,071 - INFO - 📊 Fetching DOGE/USDT 15m: 2025-07-02 to 2025-09-30
+2025-10-01 02:45:26,072 - INFO - ⏱️  Expected ~8 API calls
+2025-10-01 02:45:28,198 - INFO - 🔄 Post-processing 8642 raw candles...
+2025-10-01 02:45:28,198 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:45:29,747 - INFO - ✅ No significant gaps detected in DOGE/USDT 15m
+2025-10-01 02:45:29,747 - INFO - 📈 Final dataset: 8,641 candles from 2025-07-02 19:30:00+00:00 to 2025-09-30 19:30:00+00:00
+2025-10-01 02:45:29,749 - INFO - 📊 Raw data: 8,641 candles from 2025-07-02 19:30:00+00:00 to 2025-09-30 19:30:00+00:00
+2025-10-01 02:45:30,421 - INFO - ⚙️  Adding technical indicators for 8642 rows...
+2025-10-01 02:45:30,421 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 8642 rows)
+2025-10-01 02:45:30,421 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 720
+2025-10-01 02:45:30,764 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:45:30,764 - INFO - 📈 After indicators: 8,642 rows
+2025-10-01 02:45:30,764 - INFO - 🔢 Adding derivative features for 8642 rows...
+2025-10-01 02:45:30,764 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:45:40,157 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:45:40,157 - INFO - 🧮 After derivatives: 8,642 rows
+2025-10-01 02:45:40,157 - INFO - 🌐 Merging external data...
+2025-10-01 02:45:40,160 - INFO - 🔗 After external merge: 8,642 rows
+2025-10-01 02:45:40,160 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:45:40,160 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:45:40,160 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:45:40,187 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:45:40,187 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:45:40,221 - INFO - 🏷️  After labeling: 8,642 rows (columns now: 379)
+2025-10-01 02:45:40,228 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:45:40,242 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:45:40,399 - INFO - 🧹 Conservative trimming: 8,642 → 8,546 rows (-96)
+2025-10-01 02:45:40,400 - INFO - ⏱️  Processing completed in 14.3s
+2025-10-01 02:45:40,400 - INFO - ✅ DOGEUSDT 15m processing completed successfully!
+2025-10-01 02:45:40,401 - INFO - Saving to data/db/doge_15m.sqlite in replace mode
+2025-10-01 02:45:40,421 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 15m
+2025-10-01 02:45:40,994 - INFO - 💾 Saved using replace mode for DOGEUSDT 15m
+2025-10-01 02:45:41,001 - INFO - ✅ Saved DOGEUSDT 15m: 8,546 rows to data/db/doge_15m.sqlite
+2025-10-01 02:45:41,001 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:45:41,001 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:45:41,010 - INFO -   DOGEUSDT 15m: 8,546 rows, 16.1 MB
+2025-10-01 02:45:41,886 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:45:43,830 - INFO - Processing only timeframe: 30m
+2025-10-01 02:45:43,830 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:45:43,830 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:45:43,830 - INFO - Timeframes to process: ['30m']
+2025-10-01 02:45:43,830 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:45:43,830 - INFO - 🚀 Starting DOGEUSDT 30m processing pipeline...
+2025-10-01 02:45:43,830 - INFO - 📊 Fetching DOGE/USDT 30m: 2025-07-02 to 2025-09-30
+2025-10-01 02:45:43,830 - INFO - ⏱️  Expected ~4 API calls
+2025-10-01 02:45:44,950 - INFO - 🔄 Post-processing 4322 raw candles...
+2025-10-01 02:45:44,950 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:45:46,497 - INFO - ✅ No significant gaps detected in DOGE/USDT 30m
+2025-10-01 02:45:46,497 - INFO - 📈 Final dataset: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:45:46,499 - INFO - 📊 Raw data: 4,321 candles from 2025-07-02 19:00:00+00:00 to 2025-09-30 19:00:00+00:00
+2025-10-01 02:45:47,013 - INFO - ⚙️  Adding technical indicators for 4322 rows...
+2025-10-01 02:45:47,013 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 4322 rows)
+2025-10-01 02:45:47,013 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:45:47,186 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:45:47,186 - INFO - 📈 After indicators: 4,322 rows
+2025-10-01 02:45:47,186 - INFO - 🔢 Adding derivative features for 4322 rows...
+2025-10-01 02:45:47,186 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:45:51,782 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:45:51,782 - INFO - 🧮 After derivatives: 4,322 rows
+2025-10-01 02:45:51,782 - INFO - 🌐 Merging external data...
+2025-10-01 02:45:51,784 - INFO - 🔗 After external merge: 4,322 rows
+2025-10-01 02:45:51,784 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:45:51,784 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:45:51,784 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:45:51,799 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:45:51,799 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:45:51,818 - INFO - 🏷️  After labeling: 4,322 rows (columns now: 379)
+2025-10-01 02:45:51,824 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:45:51,833 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:45:51,914 - INFO - 🧹 Conservative trimming: 4,322 → 4,226 rows (-96)
+2025-10-01 02:45:51,915 - INFO - ⏱️  Processing completed in 8.1s
+2025-10-01 02:45:51,915 - INFO - ✅ DOGEUSDT 30m processing completed successfully!
+2025-10-01 02:45:51,916 - INFO - Saving to data/db/doge_30m.sqlite in replace mode
+2025-10-01 02:45:51,922 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 30m
+2025-10-01 02:45:52,211 - INFO - 💾 Saved using replace mode for DOGEUSDT 30m
+2025-10-01 02:45:52,217 - INFO - ✅ Saved DOGEUSDT 30m: 4,226 rows to data/db/doge_30m.sqlite
+2025-10-01 02:45:52,217 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:45:52,217 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:45:52,222 - INFO -   DOGEUSDT 30m: 4,226 rows, 7.8 MB
+2025-10-01 02:45:53,074 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:45:55,180 - INFO - Processing only timeframe: 1h
+2025-10-01 02:45:55,180 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:45:55,180 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:45:55,180 - INFO - Timeframes to process: ['1h']
+2025-10-01 02:45:55,180 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:45:55,180 - INFO - 🚀 Starting DOGEUSDT 1h processing pipeline...
+2025-10-01 02:45:55,180 - INFO - 📊 Fetching DOGE/USDT 1h: 2025-07-02 to 2025-09-30
+2025-10-01 02:45:55,180 - INFO - ⏱️  Expected ~2 API calls
+2025-10-01 02:45:55,788 - INFO - 🔄 Post-processing 2162 raw candles...
+2025-10-01 02:45:55,788 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:45:57,456 - INFO - ✅ No significant gaps detected in DOGE/USDT 1h
+2025-10-01 02:45:57,457 - INFO - 📈 Final dataset: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:45:57,458 - INFO - 📊 Raw data: 2,161 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 18:00:00+00:00
+2025-10-01 02:45:57,934 - INFO - ⚙️  Adding technical indicators for 2162 rows...
+2025-10-01 02:45:57,934 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 2162 rows)
+2025-10-01 02:45:57,934 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:45:58,043 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:45:58,043 - INFO - 📈 After indicators: 2,162 rows
+2025-10-01 02:45:58,043 - INFO - 🔢 Adding derivative features for 2162 rows...
+2025-10-01 02:45:58,043 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:46:00,375 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:46:00,375 - INFO - 🧮 After derivatives: 2,162 rows
+2025-10-01 02:46:00,375 - INFO - 🌐 Merging external data...
+2025-10-01 02:46:00,377 - INFO - 🔗 After external merge: 2,162 rows
+2025-10-01 02:46:00,377 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:46:00,377 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:46:00,377 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:46:00,387 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:46:00,387 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:46:00,403 - INFO - 🏷️  After labeling: 2,162 rows (columns now: 379)
+2025-10-01 02:46:00,405 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:46:00,410 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:46:00,449 - INFO - 🧹 Conservative trimming: 2,162 → 2,066 rows (-96)
+2025-10-01 02:46:00,449 - INFO - ⏱️  Processing completed in 5.3s
+2025-10-01 02:46:00,449 - INFO - ✅ DOGEUSDT 1h processing completed successfully!
+2025-10-01 02:46:00,450 - INFO - Saving to data/db/doge_1h.sqlite in replace mode
+2025-10-01 02:46:00,455 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 1h
+2025-10-01 02:46:00,613 - INFO - 💾 Saved using replace mode for DOGEUSDT 1h
+2025-10-01 02:46:00,620 - INFO - ✅ Saved DOGEUSDT 1h: 2,066 rows to data/db/doge_1h.sqlite
+2025-10-01 02:46:00,620 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:46:00,620 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:46:00,623 - INFO -   DOGEUSDT 1h: 2,066 rows, 3.8 MB
+2025-10-01 02:46:01,517 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:46:03,461 - INFO - Processing only timeframe: 2h
+2025-10-01 02:46:03,462 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:46:03,462 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:46:03,462 - INFO - Timeframes to process: ['2h']
+2025-10-01 02:46:03,462 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:46:03,462 - INFO - 🚀 Starting DOGEUSDT 2h processing pipeline...
+2025-10-01 02:46:03,462 - INFO - 📊 Fetching DOGE/USDT 2h: 2025-07-02 to 2025-09-30
+2025-10-01 02:46:03,462 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:46:03,817 - INFO - 🔄 Post-processing 1081 raw candles...
+2025-10-01 02:46:03,817 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:46:05,390 - INFO - ✅ No significant gaps detected in DOGE/USDT 2h
+2025-10-01 02:46:05,391 - INFO - 📈 Final dataset: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:46:05,392 - INFO - 📊 Raw data: 1,080 candles from 2025-07-02 18:00:00+00:00 to 2025-09-30 16:00:00+00:00
+2025-10-01 02:46:05,839 - INFO - ⚙️  Adding technical indicators for 1081 rows...
+2025-10-01 02:46:05,840 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1081 rows)
+2025-10-01 02:46:05,840 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 500
+2025-10-01 02:46:05,902 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:46:05,902 - INFO - 📈 After indicators: 1,081 rows
+2025-10-01 02:46:05,902 - INFO - 🔢 Adding derivative features for 1081 rows...
+2025-10-01 02:46:05,902 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:46:07,036 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:46:07,037 - INFO - 🧮 After derivatives: 1,081 rows
+2025-10-01 02:46:07,037 - INFO - 🌐 Merging external data...
+2025-10-01 02:46:07,038 - INFO - 🔗 After external merge: 1,081 rows
+2025-10-01 02:46:07,038 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:46:07,038 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:46:07,038 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:46:07,050 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:46:07,050 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:46:07,065 - INFO - 🏷️  After labeling: 1,081 rows (columns now: 379)
+2025-10-01 02:46:07,068 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:46:07,074 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:46:07,098 - INFO - 🧹 Conservative trimming: 1,081 → 985 rows (-96)
+2025-10-01 02:46:07,099 - INFO - ⏱️  Processing completed in 3.6s
+2025-10-01 02:46:07,099 - INFO - ✅ DOGEUSDT 2h processing completed successfully!
+2025-10-01 02:46:07,099 - INFO - Saving to data/db/doge_2h.sqlite in replace mode
+2025-10-01 02:46:07,103 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 2h
+2025-10-01 02:46:07,200 - INFO - 💾 Saved using replace mode for DOGEUSDT 2h
+2025-10-01 02:46:07,208 - INFO - ✅ Saved DOGEUSDT 2h: 985 rows to data/db/doge_2h.sqlite
+2025-10-01 02:46:07,208 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:46:07,208 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:46:07,210 - INFO -   DOGEUSDT 2h: 985 rows, 1.8 MB
+2025-10-01 02:46:08,122 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:46:10,039 - INFO - Processing only timeframe: 4h
+2025-10-01 02:46:10,039 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:46:10,039 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:46:10,039 - INFO - Timeframes to process: ['4h']
+2025-10-01 02:46:10,039 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:46:10,039 - INFO - 🚀 Starting DOGEUSDT 4h processing pipeline...
+2025-10-01 02:46:10,039 - INFO - 📊 Fetching DOGE/USDT 4h: 2025-07-02 to 2025-09-30
+2025-10-01 02:46:10,039 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:46:10,160 - INFO - 🔄 Post-processing 541 raw candles...
+2025-10-01 02:46:10,160 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:46:11,700 - INFO - ✅ No significant gaps detected in DOGE/USDT 4h
+2025-10-01 02:46:11,700 - INFO - 📈 Final dataset: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:46:11,701 - INFO - 📊 Raw data: 999 candles from 2025-04-17 04:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:46:12,163 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:46:12,163 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:46:12,181 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:46:12,181 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:46:12,181 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:46:13,028 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:46:13,029 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:46:13,029 - INFO - 🌐 Merging external data...
+2025-10-01 02:46:13,029 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:46:13,030 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:46:13,030 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:46:13,030 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:46:13,035 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:46:13,035 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:46:13,045 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:46:13,047 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:46:13,050 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:46:13,068 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:46:13,068 - INFO - ⏱️  Processing completed in 3.0s
+2025-10-01 02:46:13,069 - INFO - ✅ DOGEUSDT 4h processing completed successfully!
+2025-10-01 02:46:13,069 - INFO - Saving to data/db/doge_4h.sqlite in replace mode
+2025-10-01 02:46:13,072 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 4h
+2025-10-01 02:46:13,075 - INFO - ✂️  Trimmed 383 old rows beyond 90d window for DOGEUSDT 4h
+2025-10-01 02:46:13,133 - INFO - 💾 Saved using replace mode for DOGEUSDT 4h
+2025-10-01 02:46:13,140 - INFO - ✅ Saved DOGEUSDT 4h: 521 rows to data/db/doge_4h.sqlite
+2025-10-01 02:46:13,140 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:46:13,140 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:46:13,142 - INFO -   DOGEUSDT 4h: 521 rows, 1.1 MB
+2025-10-01 02:46:14,004 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:46:15,782 - INFO - Processing only timeframe: 6h
+2025-10-01 02:46:15,782 - INFO - Pairs override: ['DOGEUSDT'] → ['DOGEUSDT']
+2025-10-01 02:46:15,782 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:46:15,782 - INFO - Timeframes to process: ['6h']
+2025-10-01 02:46:15,782 - INFO - Pairs to process: ['DOGEUSDT']
+2025-10-01 02:46:15,782 - INFO - 🚀 Starting DOGEUSDT 6h processing pipeline...
+2025-10-01 02:46:15,782 - INFO - 📊 Fetching DOGE/USDT 6h: 2025-07-02 to 2025-09-30
+2025-10-01 02:46:15,782 - INFO - ⏱️  Expected ~1 API calls
+2025-10-01 02:46:15,893 - INFO - 🔄 Post-processing 361 raw candles...
+2025-10-01 02:46:15,894 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:46:17,444 - INFO - ✅ No significant gaps detected in DOGE/USDT 6h
+2025-10-01 02:46:17,444 - INFO - 📈 Final dataset: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:46:17,446 - INFO - 📊 Raw data: 999 candles from 2025-01-24 00:00:00+00:00 to 2025-09-30 12:00:00+00:00
+2025-10-01 02:46:17,905 - INFO - ⚙️  Adding technical indicators for 1000 rows...
+2025-10-01 02:46:17,905 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 1000 rows)
+2025-10-01 02:46:17,922 - INFO - ✅ Technical indicators added (single-threaded). Columns: 40
+2025-10-01 02:46:17,922 - INFO - 📈 After indicators: 1,000 rows
+2025-10-01 02:46:17,922 - INFO - 🔢 Adding derivative features for 1000 rows...
+2025-10-01 02:46:18,933 - INFO - ✅ Derivatives added (single-threaded). Final columns: 367
+2025-10-01 02:46:18,933 - INFO - 🧮 After derivatives: 1,000 rows
+2025-10-01 02:46:18,933 - INFO - 🌐 Merging external data...
+2025-10-01 02:46:18,934 - INFO - 🔗 After external merge: 1,000 rows
+2025-10-01 02:46:18,934 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:46:18,934 - WARNING - Auto-balance config not found, using fallback: 0.150%
+2025-10-01 02:46:18,934 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:46:18,941 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:46:18,941 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:46:18,951 - INFO - 🏷️  After labeling: 1,000 rows (columns now: 379)
+2025-10-01 02:46:18,954 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:46:18,958 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:46:18,976 - INFO - 🧹 Conservative trimming: 1,000 → 904 rows (-96)
+2025-10-01 02:46:18,976 - INFO - ⏱️  Processing completed in 3.2s
+2025-10-01 02:46:18,976 - INFO - ✅ DOGEUSDT 6h processing completed successfully!
+2025-10-01 02:46:18,976 - INFO - Saving to data/db/doge_6h.sqlite in replace mode
+2025-10-01 02:46:18,980 - INFO - 🔥 Force full rebuild - skipping merge with existing data for DOGEUSDT 6h
+2025-10-01 02:46:18,982 - INFO - ✂️  Trimmed 563 old rows beyond 90d window for DOGEUSDT 6h
+2025-10-01 02:46:19,057 - INFO - 💾 Saved using replace mode for DOGEUSDT 6h
+2025-10-01 02:46:19,066 - INFO - ✅ Saved DOGEUSDT 6h: 341 rows to data/db/doge_6h.sqlite
+2025-10-01 02:46:19,066 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:46:19,066 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:46:19,067 - INFO -   DOGEUSDT 6h: 341 rows, 0.7 MB
+2025-10-01 02:46:20,041 - DEBUG - Logger initialized at data/logs/pipeline_20250930.log
+2025-10-01 02:46:21,763 - INFO - Processing only timeframe: 15m
+2025-10-01 02:46:21,763 - INFO - Pairs override: ['btcusdt'] → ['BTCUSDT']
+2025-10-01 02:46:21,763 - INFO - Starting separate timeframe collection to data/db/ (market: future)
+2025-10-01 02:46:21,763 - INFO - Timeframes to process: ['15m']
+2025-10-01 02:46:21,763 - INFO - Pairs to process: ['BTCUSDT']
+2025-10-01 02:46:21,763 - INFO - 🚀 Starting BTCUSDT 15m processing pipeline...
+2025-10-01 02:46:21,763 - INFO - 📊 Fetching BTC/USDT 15m: 2025-07-02 to 2025-09-30
+2025-10-01 02:46:21,763 - INFO - ⏱️  Expected ~8 API calls
+2025-10-01 02:46:23,881 - INFO - 🔄 Post-processing 8642 raw candles...
+2025-10-01 02:46:23,881 - INFO - 🎯 Tail sync: 4 iterations
+2025-10-01 02:46:25,437 - INFO - ✅ No significant gaps detected in BTC/USDT 15m
+2025-10-01 02:46:25,438 - INFO - 📈 Final dataset: 8,641 candles from 2025-07-02 19:30:00+00:00 to 2025-09-30 19:30:00+00:00
+2025-10-01 02:46:25,441 - INFO - 📊 Raw data: 8,641 candles from 2025-07-02 19:30:00+00:00 to 2025-09-30 19:30:00+00:00
+2025-10-01 02:46:26,119 - INFO - ⚙️  Adding technical indicators for 8642 rows...
+2025-10-01 02:46:26,119 - INFO - 🔧 Auto-detected workers: 4/8 CPUs (dataset size: 8642 rows)
+2025-10-01 02:46:26,119 - INFO - 🚀 Using parallel processing: 4 workers, chunk size: 720
+2025-10-01 02:46:26,447 - INFO - ✅ Parallel technical indicators completed. Columns: 40
+2025-10-01 02:46:26,447 - INFO - 📈 After indicators: 8,642 rows
+2025-10-01 02:46:26,447 - INFO - 🔢 Adding derivative features for 8642 rows...
+2025-10-01 02:46:26,447 - INFO - 🚀 Using parallel processing for derivatives: 4 workers
+2025-10-01 02:46:35,556 - INFO - ✅ Parallel derivatives completed. Final columns: 367
+2025-10-01 02:46:35,556 - INFO - 🧮 After derivatives: 8,642 rows
+2025-10-01 02:46:35,556 - INFO - 🌐 Merging external data...
+2025-10-01 02:46:35,558 - INFO - 🔗 After external merge: 8,642 rows
+2025-10-01 02:46:35,558 - INFO - 🎯 Creating base direction label (horizon=20, mode=auto_balanced)...
+2025-10-01 02:46:35,558 - INFO - 🎯 Auto-balanced threshold for 15m: 0.150% (average fallback)
+2025-10-01 02:46:35,558 - INFO - 🎯 Adding multi-horizon direction labels: [1, 5, 10, 20]
+2025-10-01 02:46:35,585 - INFO - 🎯 Skipping legacy direction label - already covered by direction_h20 in multi-horizon
+2025-10-01 02:46:35,585 - INFO - 📈 Adding extremes for horizon=20 (max high / min low)...
+2025-10-01 02:46:35,616 - INFO - 🏷️  After labeling: 8,642 rows (columns now: 379)
+2025-10-01 02:46:35,622 - INFO - 🔧 Trimmed 76 head rows with NaN in essential indicators (including BB72)
+2025-10-01 02:46:35,633 - INFO - 🎯 Trimmed 20 tail rows without target labels (including multi-horizon/extremes)
+2025-10-01 02:46:35,787 - INFO - 🧹 Conservative trimming: 8,642 → 8,546 rows (-96)
+2025-10-01 02:46:35,787 - INFO - ⏱️  Processing completed in 14.0s
+2025-10-01 02:46:35,787 - INFO - ✅ BTCUSDT 15m processing completed successfully!
+2025-10-01 02:46:35,789 - INFO - Saving to data/db/btc_15m.sqlite in replace mode
+2025-10-01 02:46:35,810 - INFO - 🔥 Force full rebuild - skipping merge with existing data for BTCUSDT 15m
+2025-10-01 02:46:36,493 - INFO - 💾 Saved using replace mode for BTCUSDT 15m
+2025-10-01 02:46:36,497 - INFO - ✅ Saved BTCUSDT 15m: 8,546 rows to data/db/btc_15m.sqlite
+2025-10-01 02:46:36,498 - INFO - 🎉 Successfully processed 1 timeframe datasets
+2025-10-01 02:46:36,498 - INFO - === SUMMARY REPORT ===
+2025-10-01 02:46:36,504 - INFO -   BTCUSDT 15m: 8,546 rows, 16.1 MB

@@ -3,5 +3,10 @@
   "python.terminal.activateEnvironment": true,
   "terminal.integrated.env.linux": {
     "PYTHONUNBUFFERED": "1"
-  }
+  },
+  "terminal.integrated.shellArgs.linux": [
+    "--init-file", 
+    "${workspaceFolder}/.vscode/terminal-init.sh"
+  ],
+  "terminal.integrated.cwd": "${workspaceFolder}"
 }

@@ -250,6 +250,34 @@ def load_data_for_balancing(db_path: str, limit_rows: int = None) -> pd.DataFram
         logger.error(f"Error loading data from {db_path}: {e}")
         return pd.DataFrame()
 
+def discover_databases(db_dir='data/db'):
+    """Auto-discover all available database files"""
+    import glob
+    
+    # Pattern untuk mencari semua database pair_timeframe.sqlite
+    pattern = os.path.join(db_dir, '*_*.sqlite')
+    db_files = glob.glob(pattern)
+    
+    test_sources = []
+    for db_file in sorted(db_files):
+        # Skip enhanced_predictions files
+        if 'enhanced_predictions' in db_file:
+            continue
+            
+        # Extract pair and timeframe from filename
+        filename = os.path.basename(db_file).replace('.sqlite', '')
+        parts = filename.split('_')
+        
+        if len(parts) >= 2:
+            pair = parts[0].upper()
+            timeframe = '_'.join(parts[1:])  # Handle cases like 'btc_1h' or 'btc_15m'
+            
+            # Format display name
+            display_name = f"{pair} {timeframe}"
+            test_sources.append((db_file, display_name))
+    
+    return test_sources
+
 def main():
     """Main auto-balancing function"""
     print("🎯 THRESHOLD AUTO-BALANCER")
@@ -265,14 +293,17 @@ def main():
         print(f"   {class_name}: {pct}%")
     print()
     
-    # Test with different datasets
-    test_sources = [
-        ('data/db/btc_1h.sqlite', 'BTC 1h'),
-        ('data/db/eth_1h.sqlite', 'ETH 1h'), 
-        ('data/db/doge_1h.sqlite', 'DOGE 1h'),
-        ('data/db/btc_5m.sqlite', 'BTC 5m'),
-        ('data/db/eth_5m.sqlite', 'ETH 5m'),
-    ]
+    # Auto-discover all available databases
+    test_sources = discover_databases()
+    
+    if not test_sources:
+        print("❌ No database files found in data/db/")
+        return
+    
+    print(f"🔍 Found {len(test_sources)} database(s):")
+    for db_path, source_name in test_sources:
+        print(f"   📁 {source_name}: {db_path}")
+    print()
     
     all_results = {}
     

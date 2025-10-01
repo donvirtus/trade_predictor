@@ -7,7 +7,7 @@ Author: AI Assistant
 """
 
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 
 def normalize_pair_name(pair: str) -> str:
@@ -45,6 +45,56 @@ def generate_db_path(pair: str, timeframe: str, base_dir: str = 'data/db') -> st
     pair_clean = normalize_pair_name(pair)
     filename = f"{pair_clean}_{timeframe}.sqlite"
     return os.path.join(base_dir, filename)
+
+
+def resolve_dataset_base_dir(config=None, override: Optional[str] = None, default: str = 'data/db') -> str:
+    """
+    Determine dataset base directory from override, config, or default value.
+
+    Args:
+        config: Configuration object with optional output section
+        override: Explicit directory override (e.g., CLI argument)
+        default: Fallback directory when nothing else provided
+
+    Returns:
+        Base directory path for per-timeframe SQLite databases
+    """
+    if override:
+        return override
+
+    if config is not None:
+        output_cfg = getattr(config, 'output', {}) or {}
+        base_dir = output_cfg.get('base_dir')
+        if base_dir:
+            return base_dir
+
+        sqlite_path = output_cfg.get('sqlite_db')
+        if sqlite_path:
+            derived_dir = os.path.dirname(sqlite_path)
+            if derived_dir:
+                return derived_dir
+
+    return default
+
+
+def resolve_feature_table(config=None, default: str = 'features') -> str:
+    """Resolve feature table name from config output section."""
+    if config is not None:
+        output_cfg = getattr(config, 'output', {}) or {}
+        table_name = output_cfg.get('feature_table')
+        if table_name:
+            return table_name
+    return default
+
+
+def resolve_metadata_table(config=None, default: str = 'metadata') -> str:
+    """Resolve metadata table name from config output section."""
+    if config is not None:
+        output_cfg = getattr(config, 'output', {}) or {}
+        table_name = output_cfg.get('metadata_table')
+        if table_name:
+            return table_name
+    return default
 
 
 def generate_model_filename(pair: str, timeframe: str, model_type: str, 
